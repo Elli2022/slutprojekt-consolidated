@@ -206,7 +206,8 @@ async function loginUser() {
       const userList = document.createElement("ul");
       allUsers.forEach((user) => {
         const listItem = document.createElement("li");
-        listItem.textContent = user.userName;
+        const latestStatus = user.statusUpdates ? user.statusUpdates.slice(-1)[0] || '' : '';
+        listItem.textContent = `${user.userName} - Last status: ${latestStatus}`;
         listItem.addEventListener("click", () => {
           visitOtherUserPage(user.userName);
         });
@@ -220,6 +221,7 @@ async function loginUser() {
       console.log(err.message);
     }
   }
+  
   
 
 async function deleteCurrentUser() {

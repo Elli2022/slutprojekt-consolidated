@@ -95,9 +95,11 @@ export async function addStatusUpdate(newStatus: string): Promise<void> {
 
 
 export async function getCurrentUser(): Promise<UserInfo | null> {
-    const users = await getUsers();
-    const currentUser = users.find((user) => user.status === "logged-in");
-    return currentUser || null;
+  const loggedInUserName = localStorage.getItem("loggedInUser");
+  if (loggedInUserName) {
+    return await getUserByUsername(loggedInUserName);
+  }
+  return null;
 }
 
 // Export getUserByUsername function
