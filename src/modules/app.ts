@@ -126,6 +126,7 @@ async function loginUser() {
           await saveUser(currentUser);
           elements.statusInput!.value = "";
           displayStatusUpdates();
+          displayAllUsers(); // Add this line to update the user list after adding a new status
         } else {
           elements.errorMessage.innerHTML = "Failed to find the current user.";
           elements.body.appendChild(elements.errorMessage);
@@ -149,6 +150,7 @@ async function loginUser() {
       }, 3000);
     }
   }
+  
   
   
   
