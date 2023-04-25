@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/src/css/style.css">
-    <script src="/src/modules/index.ts" type="module"></script>
+    <script src="/src/modules/index.ts" type="module" defer></script>
     
     <title>Social Media</title>
 </head>
@@ -52,6 +52,15 @@
 
 <button id="backButton">Back</button>
 <button id="delete-account-button" >Delete Account</button>
+
+<div id="otherUserPage" style="display: none;">
+    <h2 class="username"></h2>
+    <img class="profile-pic" width="200" height="200" />
+    <div class="latest-status-updates"></div>
+    <button id="backToAllUsers">Back to All Users</button>
+  </div>
+  
+  
 
 </body>
 

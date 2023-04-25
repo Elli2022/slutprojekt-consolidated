@@ -191,17 +191,6 @@ async function loginUser() {
 
 
   
-  async function visitOtherUserPage(username: string): Promise<void> {
-    const user = await getUserByUsername(username);
-    if (!user) {
-      throw new Error("User not found.");
-    }
-    elements.loggedInUsersPage!.style.display = "none";
-    elements.otherUserPage!.style.display = "block";
-    elements.otherUserPage!.querySelector(".username")!.textContent = user.userName;
-    elements.otherUserPage!.querySelector(".profile-pic")!.setAttribute("src", user.profilePictureUrl);
-  }
-  
   async function displayAllUsers() {
     try {
       const allUsers = await getUsers();
@@ -224,6 +213,26 @@ async function loginUser() {
     }
   }
   
+  async function visitOtherUserPage(username: string): Promise<void> {
+    const user = await getUserByUsername(username);
+    if (!user) {
+      throw new Error("User not found.");
+    }
+    
+    const loggedInUsersPage = document.getElementById("container");
+    const otherUserPage = document.getElementById("otherUserPage");
+  
+    if (loggedInUsersPage && otherUserPage) {
+      loggedInUsersPage.style.display = "none";
+      otherUserPage.style.display = "block";
+      otherUserPage.querySelector(".username")!.textContent = user.userName;
+      otherUserPage.querySelector(".profile-pic")!.setAttribute("src", user.profilePictureUrl);
+    } else {
+      console.error("Error: loggedInUsersPage or otherUserPage element is missing.");
+    }
+  }
+  
+
   
 
 async function deleteCurrentUser() {

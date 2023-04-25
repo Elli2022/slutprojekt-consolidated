@@ -24,13 +24,12 @@ export const elements = {
     deleteAccountButton: document.getElementById("delete-account-button") as HTMLButtonElement | null,
     statusInput: document.getElementById("status-input") as HTMLInputElement | null,
     statusUpdateButton: document.getElementById("status-update-button") as HTMLButtonElement | null,
-    otherUserPage: document.getElementById("other-user-page") as HTMLDivElement | null,
+    otherUserPage: document.getElementById("other-user-page") as HTMLElement,
     loggedInUsersPage: document.getElementById("logged-in-users-page") as HTMLDivElement | null,
     statusUpdatesList: document.getElementById("status-updates-list") as HTMLUListElement | null,
     submitStatus: document.getElementById("submit-status") as HTMLButtonElement,
     allUsersList: document.getElementById("allUsersList") as HTMLUListElement,
-    userStatus: document.getElementById('userStatus') as HTMLElement,
-    
+    userStatus: document.getElementById('userStatus') as HTMLElement,    
 };
 
 
