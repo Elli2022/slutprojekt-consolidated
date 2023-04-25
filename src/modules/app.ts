@@ -19,7 +19,7 @@ async function createUser() {
             password: password,
             status: "",
             imageurl: selectedImage,
-            newUser: true, // Set newUser to true when creating a new account
+            newUser: true, // Setting newUser to true when creating a new account
             statusUpdates: [],
         };
         
@@ -102,6 +102,9 @@ async function loginUser() {
         elements.errorMessage.remove();
       }, 3000);
     }
+    document.getElementById("backButton")!.style.display = "block";
+    document.getElementById("delete-account-button")!.style.display = "block";
+
   }
   
   async function displayUserStatus() {
@@ -152,12 +155,6 @@ async function loginUser() {
   }
   
   
-  
-  
-  
-  
-  
-
   async function displayStatusUpdates() {
     const currentUser = await getCurrentUser();
     if (currentUser) {
@@ -226,16 +223,14 @@ async function loginUser() {
       loggedInUsersPage.style.display = "none";
       otherUserPage.style.display = "block";
       otherUserPage.querySelector(".username")!.textContent = user.userName;
-      otherUserPage.querySelector(".profile-pic")!.setAttribute("src", user.profilePictureUrl);
+      otherUserPage.querySelector(".profile-pic")!.setAttribute("src", user.imageurl);
     } else {
       console.error("Error: loggedInUsersPage or otherUserPage element is missing.");
     }
   }
   
 
-  
-
-async function deleteCurrentUser() {
+  async function deleteCurrentUser() {
     const userName = elements.usernameInput!.value.trim();
     const password = elements.passwordInput!.value.trim();
 
@@ -281,7 +276,12 @@ async function deleteCurrentUser() {
             elements.errorMessage.remove();
         }, 3000);
     }
+
+    // Navigate back to the login page
+    elements.container.style.display = "none";
+    elements.logInpage.style.display = "block";
 }
+
 
 
 
