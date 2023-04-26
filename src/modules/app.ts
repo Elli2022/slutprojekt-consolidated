@@ -1,170 +1,167 @@
-import { elements} from './domElements';
+import { elements } from './domElements';
 import { UserInfo } from './interfaces';
-import {  getUsers, saveUser, getCurrentUser, deleteUser, getUserByUsername  } from './api';
+import { getUsers, saveUser, getCurrentUser, deleteUser, getUserByUsername } from './api';
 import { getLoggedInUser as loggedInUser } from './api';
 
 async function createUser() {
-    const userName = elements.usernameInput!.value.trim();
-    const password = elements.passwordInput!.value.trim();
-    const selectedImage = elements.imageSelection!.value.trim();
+  const userName = elements.usernameInput!.value.trim();
+  const password = elements.passwordInput!.value.trim();
+  const selectedImage = elements.imageSelection!.value.trim();
 
-    if (userName && password && selectedImage) {
-        const users = await getUsers();
-        const userExists = users.some(user => user.userName === userName);
+  if (userName && password && selectedImage) {
+    const users = await getUsers();
+    const userExists = users.some(user => user.userName === userName);
 
-        const newUser: UserInfo = {
-            userName: userName,
-            password: password,
-            status: "",
-            imageurl: selectedImage,
-            newUser: true, // Setting newUser to true when creating a new account
-            statusUpdates: [],
-        };
-        
-
-        try {
-            await saveUser(newUser);
-            elements.accountCreated.innerHTML = "Account Created!";
-            elements.body.appendChild(elements.accountCreated);
-            setTimeout(() => {
-                elements.accountCreated.remove();
-            }, 3000);
-        } catch (err) {
-            console.log(err);
-            elements.errorMessage.innerHTML = "Failed to create account. Try again.";
-            elements.body.appendChild(elements.errorMessage);
-            setTimeout(() => {
-                elements.errorMessage.remove();
-            }, 3000);
-        }
-    } else {
-        elements.errorMessage.innerHTML = "Please fill in all fields.";
-        elements.body.appendChild(elements.errorMessage);
-        setTimeout(() => {
-            elements.errorMessage.remove();
-        }, 3000);
-    }
-}
+    const newUser: UserInfo = {
+      userName: userName,
+      password: password,
+      status: "",
+      imageurl: selectedImage,
+      newUser: true, // Setting newUser to true when creating a new account
+      statusUpdates: [],
+    };
 
 
-
-async function loginUser() {
-    const userName = elements.usernameInput!.value.trim();
-    const password = elements.passwordInput!.value.trim();
-  
-    if (userName && password) {
-      try {
-        const users = await getUsers();
-        const foundUser = users.find((user) => user.userName === userName && user.password === password);
-  
-        if (foundUser) {
-          foundUser.newUser = false; // Set newUser to false when user logs in
-          foundUser.status = "logged-in"; // Set the user's status to "logged-in"
-          await saveUser(foundUser);
-          localStorage.setItem("loggedInUser", foundUser.userName);
-  
-          elements.logInpage.style.display = "none";
-          elements.container.style.display = "block";
-  
-          if (elements.currentUser) {
-            elements.currentUser.textContent = `Logged in as: ${foundUser.userName}`;
-          } else {
-            console.error('elements.currentUser is null');
-          }
-  
-    
-          displayLoggedInUsers();
-          displayUserStatus();
-  
-          const loggedInUserHeader = document.getElementById("loggedInUserHeader");
-          loggedInUserHeader!.textContent = `Logged in as: ${foundUser.userName}`;
-        } else {
-          elements.errorMessage.innerHTML = "Incorrect username or password. Try again.";
-          elements.body.appendChild(elements.errorMessage);
-          setTimeout(() => {
-            elements.errorMessage.remove();
-          }, 3000);
-        }
-      } catch (err) {
-        console.log(err);
-        elements.errorMessage.innerHTML = "Failed to log in. Try again.";
-        elements.body.appendChild(elements.errorMessage);
-        setTimeout(() => {
-          elements.errorMessage.remove();
-        }, 3000);
-      }
-    } else {
-      elements.errorMessage.innerHTML = "Please enter a username and password.";
+    try {
+      await saveUser(newUser);
+      elements.accountCreated.innerHTML = "Account Created!";
+      elements.body.appendChild(elements.accountCreated);
+      setTimeout(() => {
+        elements.accountCreated.remove();
+      }, 3000);
+    } catch (err) {
+      console.log(err);
+      elements.errorMessage.innerHTML = "Failed to create account. Try again.";
       elements.body.appendChild(elements.errorMessage);
       setTimeout(() => {
         elements.errorMessage.remove();
       }, 3000);
     }
-    document.getElementById("backButton")!.style.display = "block";
-    document.getElementById("delete-account-button")!.style.display = "block";
-
+  } else {
+    elements.errorMessage.innerHTML = "Please fill in all fields.";
+    elements.body.appendChild(elements.errorMessage);
+    setTimeout(() => {
+      elements.errorMessage.remove();
+    }, 3000);
   }
-  
-  async function displayUserStatus() {
-    const currentUser = await getCurrentUser();
-    if (currentUser) {
-      elements.userStatus!.textContent = `${currentUser.userName}'s status: ${currentUser.status}`;
-    }
-  }
-
-  async function addStatusUpdate() {
-    const newStatus = elements.statusInput!.value.trim();
-  
-    if (newStatus) {
-        try {
-            const currentUser = await getCurrentUser();
-            if (currentUser) {
-                if (!currentUser.statusUpdates) {
-                    currentUser.statusUpdates = [];
-                }
-                const timestamp = new Date().toISOString();
-                currentUser.statusUpdates.push({status: newStatus, timestamp: timestamp});
-                await saveUser(currentUser);
-                elements.statusInput!.value = "";
-                // displayStatusUpdates();
-                displayAllUsers();
-            } else {
-                elements.errorMessage.innerHTML = "Failed to find the current user.";
-                elements.body.appendChild(elements.errorMessage);
-                setTimeout(() => {
-                    elements.errorMessage.remove();
-                }, 3000);
-            }
-        } catch (err) {
-            console.log(err);
-            elements.errorMessage.innerHTML = "Failed to update status. Try again.";
-            elements.body.appendChild(elements.errorMessage);
-            setTimeout(() => {
-                elements.errorMessage.remove();
-            }, 3000);
-        }
-    } else {
-        elements.errorMessage.innerHTML = "Please enter a status update.";
-        elements.body.appendChild(elements.errorMessage);
-        setTimeout(() => {
-            elements.errorMessage.remove();
-        }, 3000);
-    }
 }
 
-  async function displayLoggedInUsers() {
-    const users = await getUsers();
-    const currentUser = await getCurrentUser();
 
-    users.forEach(user => {
-        const li = document.createElement("li");
-        li.textContent = `${user.userName}:`;
+async function loginUser() {
+  const userName = elements.usernameInput!.value.trim();
+  const password = elements.passwordInput!.value.trim();
 
-        // Check that the element exists before appending the child element
-        if (elements.loggedInUsersList) {
-            elements.loggedInUsersList.appendChild(li);
+  if (userName && password) {
+    try {
+      const users = await getUsers();
+      const foundUser = users.find((user) => user.userName === userName && user.password === password);
+
+      if (foundUser) {
+        foundUser.newUser = false; // Set newUser to false when user logs in
+        foundUser.status = "logged-in"; // Set the user's status to "logged-in"
+        await saveUser(foundUser);
+        localStorage.setItem("loggedInUser", foundUser.userName);
+        elements.allUsersList.style.display = "block";
+        elements.logInpage.style.display = "none";
+        elements.container.style.display = "block";
+        if (elements.currentUser) {
+          elements.currentUser.textContent = `Logged in as: ${foundUser.userName}`;
+        } else {
+          console.error('elements.currentUser is null');
         }
-    });
+
+        displayLoggedInUsers();
+        displayUserStatus();
+
+        const loggedInUserHeader = document.getElementById("loggedInUserHeader");
+        loggedInUserHeader!.textContent = `Logged in as: ${foundUser.userName}`;
+      } else {
+        elements.errorMessage.innerHTML = "Incorrect username or password. Try again.";
+        elements.body.appendChild(elements.errorMessage);
+        setTimeout(() => {
+          elements.errorMessage.remove();
+        }, 3000);
+      }
+    } catch (err) {
+      console.log(err);
+      elements.errorMessage.innerHTML = "Failed to log in. Try again.";
+      elements.body.appendChild(elements.errorMessage);
+      setTimeout(() => {
+        elements.errorMessage.remove();
+      }, 3000);
+    }
+  } else {
+    elements.errorMessage.innerHTML = "Please enter a username and password.";
+    elements.body.appendChild(elements.errorMessage);
+    setTimeout(() => {
+      elements.errorMessage.remove();
+    }, 3000);
+  }
+  document.getElementById("backButton")!.style.display = "block";
+  document.getElementById("delete-account-button")!.style.display = "block";
+
+}
+
+async function displayUserStatus() {
+  const currentUser = await getCurrentUser();
+  if (currentUser) {
+    elements.userStatus!.textContent = `${currentUser.userName}'s status: ${currentUser.status}`;
+  }
+}
+
+async function addStatusUpdate() {
+  const newStatus = elements.statusInput!.value.trim();
+
+  if (newStatus) {
+    try {
+      const currentUser = await getCurrentUser();
+      if (currentUser) {
+        if (!currentUser.statusUpdates) {
+          currentUser.statusUpdates = [];
+        }
+        const timestamp = new Date().toISOString();
+        currentUser.statusUpdates.push({ status: newStatus, timestamp: timestamp });
+        await saveUser(currentUser);
+        elements.statusInput!.value = "";
+        // displayStatusUpdates();
+        displayAllUsers();
+      } else {
+        elements.errorMessage.innerHTML = "Failed to find the current user.";
+        elements.body.appendChild(elements.errorMessage);
+        setTimeout(() => {
+          elements.errorMessage.remove();
+        }, 3000);
+      }
+    } catch (err) {
+      console.log(err);
+      elements.errorMessage.innerHTML = "Failed to update status. Try again.";
+      elements.body.appendChild(elements.errorMessage);
+      setTimeout(() => {
+        elements.errorMessage.remove();
+      }, 3000);
+    }
+  } else {
+    elements.errorMessage.innerHTML = "Please enter a status update.";
+    elements.body.appendChild(elements.errorMessage);
+    setTimeout(() => {
+      elements.errorMessage.remove();
+    }, 3000);
+  }
+}
+
+async function displayLoggedInUsers() {
+  const users = await getUsers();
+  const currentUser = await getCurrentUser();
+
+  users.forEach(user => {
+    const li = document.createElement("li");
+    li.textContent = `${user.userName}:`;
+
+    // Check that the element exists before appending the child element
+    if (elements.loggedInUsersList) {
+      elements.loggedInUsersList.appendChild(li);
+    }
+  });
 }
 
 async function displayAllUsers() {
@@ -188,7 +185,7 @@ async function displayAllUsers() {
 
       listItem.appendChild(userImage);
       listItem.appendChild(userNameText);
-      
+
       listItem.addEventListener("click", () => {
         visitOtherUserPage(user.userName);
       });
@@ -241,24 +238,38 @@ async function visitOtherUserPage(username: string): Promise<void> {
   }
 }
 
+function goBackToMainView() {
+  const loggedInUsersPage = document.getElementById("container");
+  const otherUserPage = document.getElementById("otherUserPage");
 
+  if (loggedInUsersPage && otherUserPage) {
+    loggedInUsersPage.style.display = "block";
+    otherUserPage.style.display = "none";
 
-  function goBackToMainView() {
-    const loggedInUsersPage = document.getElementById("container");
-    const otherUserPage = document.getElementById("otherUserPage");
-
-    if (loggedInUsersPage && otherUserPage) {
-        loggedInUsersPage.style.display = "block";
-        otherUserPage.style.display = "none";
-
-        // Show the userListWrapper when returning to the main view
-        const userListWrapper = document.getElementById("userListWrapper");
-        if (userListWrapper) {
-            userListWrapper.style.display = "block";
-        }
-    } else {
-        console.error("Error: loggedInUsersPage or otherUserPage element is missing.");
+    // Show the userListWrapper when returning to the main view
+    const userListWrapper = document.getElementById("userListWrapper");
+    if (userListWrapper) {
+      userListWrapper.style.display = "block";
     }
+  } else {
+    console.error("Error: loggedInUsersPage or otherUserPage element is missing.");
+  }
+}
+
+async function redirectToLogin() {
+  await logoutAndUpdateStatus();
+  window.location.href = "/"; // Assuming your login page is at the root URL
+}
+
+document.getElementById("logoutButton")?.addEventListener("click", redirectToLogin);
+
+async function logoutAndUpdateStatus() {
+  const currentUser = await getCurrentUser();
+  if (currentUser) {
+    currentUser.status = "logged-out";
+    await saveUser(currentUser);
+  }
+  localStorage.removeItem("loggedInUser");
 }
 
 async function deleteCurrentUser() {
@@ -266,50 +277,50 @@ async function deleteCurrentUser() {
   const password = elements.passwordInput!.value.trim();
 
   if (userName && password) {
-      try {
-          const users = await getUsers();
+    try {
+      const users = await getUsers();
 
-          const foundUser = users.find((user) => user.userName === userName && user.password === password);
+      const foundUser = users.find((user) => user.userName === userName && user.password === password);
 
-          if (foundUser) {
-              await deleteUser(foundUser.userName);
-              localStorage.removeItem("loggedInUser");
-              elements.userDeletedSuccessfully.innerHTML = "User deleted successfully!";
-              elements.body.appendChild(elements.userDeletedSuccessfully);
-              setTimeout(() => {
-                  elements.userDeletedSuccessfully.remove();
-              }, 3000);
+      if (foundUser) {
+        await deleteUser(foundUser.userName);
+        localStorage.removeItem("loggedInUser");
+        elements.userDeletedSuccessfully.innerHTML = "User deleted successfully!";
+        elements.body.appendChild(elements.userDeletedSuccessfully);
+        setTimeout(() => {
+          elements.userDeletedSuccessfully.remove();
+        }, 3000);
 
-              // Reset the input fields and navigate back to the login page
-              elements.usernameInput!.value = '';
-              elements.passwordInput!.value = '';
-              elements.container.style.display = "none";
-              elements.logInpage.style.display = "block";
+        // Reset the input fields and navigate back to the login page
+        elements.usernameInput!.value = '';
+        elements.passwordInput!.value = '';
+        elements.container.style.display = "none";
+        elements.logInpage.style.display = "block";
 
-              // Update the list of users and their status updates after deleting the user
-              await displayAllUsers();
+        // Update the list of users and their status updates after deleting the user
+        await displayAllUsers();
 
-          } else {
-              elements.failedToDeleteUser.innerHTML = "Failed to delete user. Incorrect username or password.";
-              elements.body.appendChild(elements.failedToDeleteUser);
-              setTimeout(() => {
-                  elements.failedToDeleteUser.remove();
-              }, 3000);
-          }
-      } catch (err) {
-          console.log(err);
-          elements.failedToDeleteUser.innerHTML = "Failed to delete user. Try again.";
-          elements.body.appendChild(elements.failedToDeleteUser);
-          setTimeout(() => {
-              elements.failedToDeleteUser.remove();
-          }, 3000);
+      } else {
+        elements.failedToDeleteUser.innerHTML = "Failed to delete user. Incorrect username or password.";
+        elements.body.appendChild(elements.failedToDeleteUser);
+        setTimeout(() => {
+          elements.failedToDeleteUser.remove();
+        }, 3000);
       }
-  } else {
-      elements.errorMessage.innerHTML = "Please enter a username and password.";
-      elements.body.appendChild(elements.errorMessage);
+    } catch (err) {
+      console.log(err);
+      elements.failedToDeleteUser.innerHTML = "Failed to delete user. Try again.";
+      elements.body.appendChild(elements.failedToDeleteUser);
       setTimeout(() => {
-          elements.errorMessage.remove();
+        elements.failedToDeleteUser.remove();
       }, 3000);
+    }
+  } else {
+    elements.errorMessage.innerHTML = "Please enter a username and password.";
+    elements.body.appendChild(elements.errorMessage);
+    setTimeout(() => {
+      elements.errorMessage.remove();
+    }, 3000);
   }
 
   // Navigate back to the login page
@@ -319,41 +330,41 @@ async function deleteCurrentUser() {
 
 
 function setupEventListeners() {
-    console.log("Create Account Button: ", elements.createAccountButton);
-    console.log("Submit Button: ", elements.submitButton);
-    console.log("Delete Account Button: ", elements.deleteAccountButton);
-    console.log("Submit Status: ", elements.submitStatus);
+  console.log("Create Account Button: ", elements.createAccountButton);
+  console.log("Submit Button: ", elements.submitButton);
+  console.log("Delete Account Button: ", elements.deleteAccountButton);
+  console.log("Submit Status: ", elements.submitStatus);
 
-    elements.createAccountButton!.addEventListener("click", () => {
-        createUser();
-    });
+  elements.createAccountButton!.addEventListener("click", () => {
+    createUser();
+  });
 
-    elements.submitButton!.addEventListener("click", (event) => {
-        event.preventDefault();
-        loginUser();
-    });
+  elements.submitButton!.addEventListener("click", (event) => {
+    event.preventDefault();
+    loginUser();
+  });
 
-    elements.deleteAccountButton!.addEventListener("click", () => {
-        deleteCurrentUser();
-    });
+  elements.deleteAccountButton!.addEventListener("click", () => {
+    deleteCurrentUser();
+  });
 
-    elements.submitStatus!.addEventListener("click", (event) => {
-        event.preventDefault();
-        addStatusUpdate();
-    });
-    const backButton = document.getElementById("backButton");
-    if (backButton) {
-        backButton.addEventListener("click", goBackToMainView);
-    } else {
-        console.error("Error: backButton element is missing.");
-    }
+  elements.submitStatus!.addEventListener("click", (event) => {
+    event.preventDefault();
+    addStatusUpdate();
+  });
+  const backButton = document.getElementById("backButton");
+  if (backButton) {
+    backButton.addEventListener("click", goBackToMainView);
+  } else {
+    console.error("Error: backButton element is missing.");
+  }
 }
 
 async function init() {
-    document.addEventListener('DOMContentLoaded', async () => {
-        setupEventListeners();
-        await displayAllUsers(); 
-    });
+  document.addEventListener('DOMContentLoaded', async () => {
+    setupEventListeners();
+    await displayAllUsers();
+  });
 }
 
 init();
