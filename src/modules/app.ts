@@ -72,7 +72,7 @@ async function loginUser() {
             console.error('elements.currentUser is null');
           }
   
-          displayStatusUpdates();
+    
           displayLoggedInUsers();
           displayUserStatus();
   
@@ -116,59 +116,42 @@ async function loginUser() {
     const newStatus = elements.statusInput!.value.trim();
   
     if (newStatus) {
-      try {
-        const currentUser = await getCurrentUser();
-        if (currentUser) {
-          // Check if statusUpdates exists, otherwise create an empty array
-          if (!currentUser.statusUpdates) {
-            currentUser.statusUpdates = [];
-          }
-          currentUser.statusUpdates.push(newStatus);
-          await saveUser(currentUser);
-          elements.statusInput!.value = "";
-          displayStatusUpdates();
-          displayAllUsers(); // Add this line to update the user list after adding a new status
-        } else {
-          elements.errorMessage.innerHTML = "Failed to find the current user.";
-          elements.body.appendChild(elements.errorMessage);
-          setTimeout(() => {
-            elements.errorMessage.remove();
-          }, 3000);
+        try {
+            const currentUser = await getCurrentUser();
+            if (currentUser) {
+                if (!currentUser.statusUpdates) {
+                    currentUser.statusUpdates = [];
+                }
+                const timestamp = new Date().toISOString();
+                currentUser.statusUpdates.push({status: newStatus, timestamp: timestamp});
+                await saveUser(currentUser);
+                elements.statusInput!.value = "";
+                // displayStatusUpdates();
+                displayAllUsers();
+            } else {
+                elements.errorMessage.innerHTML = "Failed to find the current user.";
+                elements.body.appendChild(elements.errorMessage);
+                setTimeout(() => {
+                    elements.errorMessage.remove();
+                }, 3000);
+            }
+        } catch (err) {
+            console.log(err);
+            elements.errorMessage.innerHTML = "Failed to update status. Try again.";
+            elements.body.appendChild(elements.errorMessage);
+            setTimeout(() => {
+                elements.errorMessage.remove();
+            }, 3000);
         }
-      } catch (err) {
-        console.log(err);
-        elements.errorMessage.innerHTML = "Failed to update status. Try again.";
+    } else {
+        elements.errorMessage.innerHTML = "Please enter a status update.";
         elements.body.appendChild(elements.errorMessage);
         setTimeout(() => {
-          elements.errorMessage.remove();
+            elements.errorMessage.remove();
         }, 3000);
-      }
-    } else {
-      elements.errorMessage.innerHTML = "Please enter a status update.";
-      elements.body.appendChild(elements.errorMessage);
-      setTimeout(() => {
-        elements.errorMessage.remove();
-      }, 3000);
     }
-  }
-  
-  
-  async function displayStatusUpdates() {
-    const currentUser = await getCurrentUser();
-    if (currentUser) {
-      const latestStatus = currentUser.statusUpdates ? currentUser.statusUpdates.slice(-1)[0] || '' : '';
-  
-      // Update the loggedInUserHeader with the current user's latest status update
-      const loggedInUserHeader = document.getElementById("loggedInUserHeader");
-      if (loggedInUserHeader) {
-        loggedInUserHeader.textContent = `Logged in as: ${currentUser.userName} - Status: ${latestStatus}`;
-      } else {
-        console.error("loggedInUserHeader element not found");
-      }
-    }
-  }
-  
-  
+}
+
   async function displayLoggedInUsers() {
     const users = await getUsers();
     const currentUser = await getCurrentUser();
@@ -184,81 +167,81 @@ async function loginUser() {
     });
 }
 
-
-  
 async function displayAllUsers() {
   try {
-      const allUsers = await getUsers();
-      const userList = document.createElement("ul");
+    const allUsers = await getUsers();
+    const userList = document.createElement("ul");
+    allUsers.forEach((user) => {
+      const listItem = document.createElement("li");
+      listItem.classList.add("user-item");
+      const latestStatus = user.statusUpdates ? user.statusUpdates.slice(-1)[0] || '' : '';
+      const date = latestStatus.timestamp ? new Date(latestStatus.timestamp) : null;
+      const formattedDate = date ? `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')} ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}:${String(date.getSeconds()).padStart(2, '0')}` : '';
 
-      allUsers.forEach((user) => {
-          const listItem = document.createElement("li");
-          const latestStatus = user.statusUpdates ? user.statusUpdates.slice(-1)[0] || '' : '';
+      const userImage = document.createElement('img');
+      userImage.src = user.imageurl;
+      userImage.width = 50; // Adjust the width as needed
+      userImage.height = 50; // Adjust the height as needed
+      userImage.style.marginRight = '5px';
 
-          // Create an img element and set its src attribute to the user's imageurl
-          const userImage = document.createElement("img");
-          userImage.src = user.imageurl;
-          userImage.width = 50; // Set the width to desired value
-          userImage.height = 50; // Set the height to desired value
-          userImage.style.marginRight = "10px"; // Add some margin to separate image from the text
+      const userNameText = document.createTextNode(`${user.userName} - Last status: ${latestStatus.status} ${formattedDate ? `(${formattedDate})` : ''}`);
 
-          listItem.textContent = `${user.userName} - Last status: ${latestStatus}`;
-          listItem.prepend(userImage); // Add the image to the listItem before the text
-
-          listItem.addEventListener("click", () => {
-              visitOtherUserPage(user.userName);
-          });
-          userList.appendChild(listItem);
+      listItem.appendChild(userImage);
+      listItem.appendChild(userNameText);
+      
+      listItem.addEventListener("click", () => {
+        visitOtherUserPage(user.userName);
       });
-
-      // Wrap the ul element with a div element and assign it an ID
-      const userListWrapper = document.createElement("div");
-      userListWrapper.id = "userListWrapper";
-      userListWrapper.appendChild(userList);
-
-      if (elements.allUsersList) {
-          elements.allUsersList.innerHTML = "";
-          elements.allUsersList.appendChild(userListWrapper);
-      }
+      userList.appendChild(listItem);
+    });
+    if (elements.allUsersList) {
+      elements.allUsersList.innerHTML = "";
+      elements.allUsersList.appendChild(userList);
+    }
   } catch (err) {
-      console.log(err.message);
+    console.log(err.message);
   }
 }
+
+
 
 
 async function visitOtherUserPage(username: string): Promise<void> {
   const user = await getUserByUsername(username);
   if (!user) {
-      throw new Error("User not found.");
+    throw new Error("User not found.");
   }
-  
+
   const loggedInUsersPage = document.getElementById("container");
   const otherUserPage = document.getElementById("otherUserPage");
 
   if (loggedInUsersPage && otherUserPage) {
-      loggedInUsersPage.style.display = "none";
-      otherUserPage.style.display = "block";
-      otherUserPage.querySelector(".username")!.textContent = user.userName;
-      otherUserPage.querySelector(".profile-pic")!.setAttribute("src", user.imageurl);
+    loggedInUsersPage.style.display = "none";
+    otherUserPage.style.display = "block";
+    otherUserPage.querySelector(".username")!.textContent = user.userName;
+    otherUserPage.querySelector(".profile-pic")!.setAttribute("src", user.imageurl);
 
-      // Add user's latest status update below the image
-      const latestStatus = user.statusUpdates ? user.statusUpdates.slice(-1)[0] || '' : '';
-      const statusElement = otherUserPage.querySelector(".user-status");
-      if (statusElement) {
-          statusElement.textContent = `Status: ${latestStatus}`;
-      } else {
-          const newStatusElement = document.createElement("div");
-          newStatusElement.className = "user-status";
-          newStatusElement.textContent = `Status: ${latestStatus}`;
-          const imageElement = otherUserPage.querySelector(".profile-pic");
-          if (imageElement) {
-              imageElement.insertAdjacentElement("afterend", newStatusElement);
-          }
-      }
+    // Display all status updates in descending order
+    const statusUpdatesContainer = otherUserPage.querySelector(".status-updates");
+    if (statusUpdatesContainer) {
+      statusUpdatesContainer.innerHTML = ""; // Clear previous status updates
+      user.statusUpdates.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()); // Sort by descending timestamp
+      user.statusUpdates.forEach((statusUpdate) => {
+        const statusElement = document.createElement("p");
+        const date = new Date(statusUpdate.timestamp);
+        const formattedDate = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')} ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}:${String(date.getSeconds()).padStart(2, '0')}`;
+        statusElement.textContent = `${formattedDate}: ${statusUpdate.status}`;
+        statusUpdatesContainer.appendChild(statusElement);
+      });
+    } else {
+      console.error("Error: statusUpdatesContainer element is missing.");
+    }
   } else {
-      console.error("Error: loggedInUsersPage or otherUserPage element is missing.");
+    console.error("Error: loggedInUsersPage or otherUserPage element is missing.");
   }
 }
+
+
 
   function goBackToMainView() {
     const loggedInUsersPage = document.getElementById("container");
