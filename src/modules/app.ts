@@ -9,20 +9,26 @@ async function createUser() {
   const selectedImage = elements.imageSelection!.value.trim();
 
   if (userName && password && selectedImage) {
-    const users = await getUsers();
-    const userExists = users.some(user => user.userName === userName);
-
-    const newUser: UserInfo = {
-      userName: userName,
-      password: password,
-      status: "",
-      imageurl: selectedImage,
-      newUser: true, // Setting newUser to true when creating a new account
-      statusUpdates: [],
-    };
-
-
     try {
+      const existingUser = await getUserByUsername(userName); // Check if user already exists
+      if (existingUser) {
+        elements.errorMessage.innerHTML = "Username already exists. Please choose a different username.";
+        elements.body.appendChild(elements.errorMessage);
+        setTimeout(() => {
+          elements.errorMessage.remove();
+        }, 3000);
+        return;
+      }
+
+      const newUser: UserInfo = {
+        userName: userName,
+        password: password,
+        status: "",
+        imageurl: selectedImage,
+        newUser: true, // Setting newUser to true when creating a new account
+        statusUpdates: [],
+      };
+
       await saveUser(newUser);
       elements.accountCreated.innerHTML = "Account Created!";
       elements.body.appendChild(elements.accountCreated);
@@ -45,6 +51,7 @@ async function createUser() {
     }, 3000);
   }
 }
+
 
 
 async function loginUser() {
@@ -97,10 +104,20 @@ async function loginUser() {
       elements.errorMessage.remove();
     }, 3000);
   }
+
+  const users = await getUsers();
+  if (users.length === 0) {
+    elements.noUsersFound.innerHTML = "No existing accounts found. Please create a new account.";
+    elements.body.appendChild(elements.noUsersFound);
+    setTimeout(() => {
+      elements.noUsersFound.remove();
+    }, 3000);
+  }
+
   document.getElementById("backButton")!.style.display = "block";
   document.getElementById("delete-account-button")!.style.display = "block";
-
 }
+
 
 async function displayUserStatus() {
   const currentUser = await getCurrentUser();
@@ -199,7 +216,6 @@ async function displayAllUsers() {
     console.log(err.message);
   }
 }
-
 
 
 
