@@ -3,8 +3,6 @@ import { UserInfo } from './interfaces';
 import {  getUsers, saveUser, getCurrentUser, deleteUser, getUserByUsername  } from './api';
 import { getLoggedInUser as loggedInUser } from './api';
 
-
-
 async function createUser() {
     const userName = elements.usernameInput!.value.trim();
     const password = elements.passwordInput!.value.trim();
@@ -188,102 +186,153 @@ async function loginUser() {
 
 
   
-  async function displayAllUsers() {
-    try {
+async function displayAllUsers() {
+  try {
       const allUsers = await getUsers();
       const userList = document.createElement("ul");
+
       allUsers.forEach((user) => {
-        const listItem = document.createElement("li");
-        const latestStatus = user.statusUpdates ? user.statusUpdates.slice(-1)[0] || '' : '';
-        listItem.textContent = `${user.userName} - Last status: ${latestStatus}`;
-        listItem.addEventListener("click", () => {
-          visitOtherUserPage(user.userName);
-        });
-        userList.appendChild(listItem);
+          const listItem = document.createElement("li");
+          const latestStatus = user.statusUpdates ? user.statusUpdates.slice(-1)[0] || '' : '';
+
+          // Create an img element and set its src attribute to the user's imageurl
+          const userImage = document.createElement("img");
+          userImage.src = user.imageurl;
+          userImage.width = 50; // Set the width to desired value
+          userImage.height = 50; // Set the height to desired value
+          userImage.style.marginRight = "10px"; // Add some margin to separate image from the text
+
+          listItem.textContent = `${user.userName} - Last status: ${latestStatus}`;
+          listItem.prepend(userImage); // Add the image to the listItem before the text
+
+          listItem.addEventListener("click", () => {
+              visitOtherUserPage(user.userName);
+          });
+          userList.appendChild(listItem);
       });
+
+      // Wrap the ul element with a div element and assign it an ID
+      const userListWrapper = document.createElement("div");
+      userListWrapper.id = "userListWrapper";
+      userListWrapper.appendChild(userList);
+
       if (elements.allUsersList) {
-        elements.allUsersList.innerHTML = "";
-        elements.allUsersList.appendChild(userList);
+          elements.allUsersList.innerHTML = "";
+          elements.allUsersList.appendChild(userListWrapper);
       }
-    } catch (err) {
+  } catch (err) {
       console.log(err.message);
-    }
+  }
+}
+
+
+async function visitOtherUserPage(username: string): Promise<void> {
+  const user = await getUserByUsername(username);
+  if (!user) {
+      throw new Error("User not found.");
   }
   
-  async function visitOtherUserPage(username: string): Promise<void> {
-    const user = await getUserByUsername(username);
-    if (!user) {
-      throw new Error("User not found.");
-    }
-    
-    const loggedInUsersPage = document.getElementById("container");
-    const otherUserPage = document.getElementById("otherUserPage");
-  
-    if (loggedInUsersPage && otherUserPage) {
+  const loggedInUsersPage = document.getElementById("container");
+  const otherUserPage = document.getElementById("otherUserPage");
+
+  if (loggedInUsersPage && otherUserPage) {
       loggedInUsersPage.style.display = "none";
       otherUserPage.style.display = "block";
       otherUserPage.querySelector(".username")!.textContent = user.userName;
       otherUserPage.querySelector(".profile-pic")!.setAttribute("src", user.imageurl);
-    } else {
+
+      // Add user's latest status update below the image
+      const latestStatus = user.statusUpdates ? user.statusUpdates.slice(-1)[0] || '' : '';
+      const statusElement = otherUserPage.querySelector(".user-status");
+      if (statusElement) {
+          statusElement.textContent = `Status: ${latestStatus}`;
+      } else {
+          const newStatusElement = document.createElement("div");
+          newStatusElement.className = "user-status";
+          newStatusElement.textContent = `Status: ${latestStatus}`;
+          const imageElement = otherUserPage.querySelector(".profile-pic");
+          if (imageElement) {
+              imageElement.insertAdjacentElement("afterend", newStatusElement);
+          }
+      }
+  } else {
       console.error("Error: loggedInUsersPage or otherUserPage element is missing.");
-    }
   }
-  
-
-  async function deleteCurrentUser() {
-    const userName = elements.usernameInput!.value.trim();
-    const password = elements.passwordInput!.value.trim();
-
-    if (userName && password) {
-        try {
-            const users = await getUsers();
-
-            const foundUser = users.find((user) => user.userName === userName && user.password === password);
-
-            if (foundUser) {
-              await deleteUser(foundUser.userName);
-              localStorage.removeItem("loggedInUser");
-                elements.userDeletedSuccessfully.innerHTML = "User deleted successfully!";
-                elements.body.appendChild(elements.userDeletedSuccessfully);
-                setTimeout(() => {
-                    elements.userDeletedSuccessfully.remove();
-                }, 3000);
-
-                // Reset the input fields and navigate back to the login page
-                elements.usernameInput!.value = '';
-                elements.passwordInput!.value = '';
-                elements.container.style.display = "none";
-                elements.logInpage.style.display = "block";
-            } else {
-                elements.failedToDeleteUser.innerHTML = "Failed to delete user. Incorrect username or password.";
-                elements.body.appendChild(elements.failedToDeleteUser);
-                setTimeout(() => {
-                    elements.failedToDeleteUser.remove();
-                }, 3000);
-            }
-        } catch (err) {
-            console.log(err);
-            elements.failedToDeleteUser.innerHTML = "Failed to delete user. Try again.";
-            elements.body.appendChild(elements.failedToDeleteUser);
-            setTimeout(() => {
-                elements.failedToDeleteUser.remove();
-            }, 3000);
-        }
-    } else {
-        elements.errorMessage.innerHTML = "Please enter a username and password.";
-        elements.body.appendChild(elements.errorMessage);
-        setTimeout(() => {
-            elements.errorMessage.remove();
-        }, 3000);
-    }
-
-    // Navigate back to the login page
-    elements.container.style.display = "none";
-    elements.logInpage.style.display = "block";
 }
 
+  function goBackToMainView() {
+    const loggedInUsersPage = document.getElementById("container");
+    const otherUserPage = document.getElementById("otherUserPage");
 
+    if (loggedInUsersPage && otherUserPage) {
+        loggedInUsersPage.style.display = "block";
+        otherUserPage.style.display = "none";
 
+        // Show the userListWrapper when returning to the main view
+        const userListWrapper = document.getElementById("userListWrapper");
+        if (userListWrapper) {
+            userListWrapper.style.display = "block";
+        }
+    } else {
+        console.error("Error: loggedInUsersPage or otherUserPage element is missing.");
+    }
+}
+
+async function deleteCurrentUser() {
+  const userName = elements.usernameInput!.value.trim();
+  const password = elements.passwordInput!.value.trim();
+
+  if (userName && password) {
+      try {
+          const users = await getUsers();
+
+          const foundUser = users.find((user) => user.userName === userName && user.password === password);
+
+          if (foundUser) {
+              await deleteUser(foundUser.userName);
+              localStorage.removeItem("loggedInUser");
+              elements.userDeletedSuccessfully.innerHTML = "User deleted successfully!";
+              elements.body.appendChild(elements.userDeletedSuccessfully);
+              setTimeout(() => {
+                  elements.userDeletedSuccessfully.remove();
+              }, 3000);
+
+              // Reset the input fields and navigate back to the login page
+              elements.usernameInput!.value = '';
+              elements.passwordInput!.value = '';
+              elements.container.style.display = "none";
+              elements.logInpage.style.display = "block";
+
+              // Update the list of users and their status updates after deleting the user
+              await displayAllUsers();
+
+          } else {
+              elements.failedToDeleteUser.innerHTML = "Failed to delete user. Incorrect username or password.";
+              elements.body.appendChild(elements.failedToDeleteUser);
+              setTimeout(() => {
+                  elements.failedToDeleteUser.remove();
+              }, 3000);
+          }
+      } catch (err) {
+          console.log(err);
+          elements.failedToDeleteUser.innerHTML = "Failed to delete user. Try again.";
+          elements.body.appendChild(elements.failedToDeleteUser);
+          setTimeout(() => {
+              elements.failedToDeleteUser.remove();
+          }, 3000);
+      }
+  } else {
+      elements.errorMessage.innerHTML = "Please enter a username and password.";
+      elements.body.appendChild(elements.errorMessage);
+      setTimeout(() => {
+          elements.errorMessage.remove();
+      }, 3000);
+  }
+
+  // Navigate back to the login page
+  elements.container.style.display = "none";
+  elements.logInpage.style.display = "block";
+}
 
 
 function setupEventListeners() {
@@ -309,9 +358,13 @@ function setupEventListeners() {
         event.preventDefault();
         addStatusUpdate();
     });
+    const backButton = document.getElementById("backButton");
+    if (backButton) {
+        backButton.addEventListener("click", goBackToMainView);
+    } else {
+        console.error("Error: backButton element is missing.");
+    }
 }
-
-
 
 async function init() {
     document.addEventListener('DOMContentLoaded', async () => {
