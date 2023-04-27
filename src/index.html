@@ -38,14 +38,15 @@
     <h2>Status updates</h2>
     <div>
       <h3>Logged in as: <span id="current-user"></span></h3>
+      
+      <ul id="status-updates"></ul>
+      <p id="userStatus" style="display: none;"></p>
+      <p id="loggedInUserHeader"></p>
       <div>
         <label for="status-input">Enter a status update:</label>
         <input type="text" id="status-input" />
         <button id="submit-status">Submit</button>
       </div>
-      <ul id="status-updates"></ul>
-      <p id="userStatus"></p>
-      <p id="loggedInUserHeader"></p>
     </div>
 </div>
 <div>
@@ -55,10 +56,11 @@
 
     
 </div>
-
+<div class="buttons-container">
 <button id="backButton" style="display:none;">Back</button>
 <button id="logoutButton" style="display:none;">Logout</button>
 <button id="delete-account-button" style="display:none;">Delete Account</button>
+</div>
 
 <div id="otherUserPage" style="display: none;">
     <h2 class="username"></h2>

@@ -1,138 +1,86 @@
-/* General styles */
 body {
-  font-family: Arial, sans-serif;
-  background-color: #f0f0f0;
-  margin: 0;
-  padding: 0;
-  align-items: center;
-  text-align:center;
-  justify-content: center;
+  background-color: #1a1a1a;
+  color: #f3f3f3;
+  font-family: 'Arial', sans-serif;
 }
 
-h1, h2 {
-  font-size: 24px;
-  color: #333;
-  text-align: center;
+#logInpage, #container, #otherUserPage {
+  width: 80%;
+  margin: auto;
+  padding: 20px;
+  border-radius: 10px;
+  background-color: #2e2e2e;
+  margin-top: 50px;
 }
 
-
-/* Form styles */
-#form {
-  background-color: #fff;
-  max-width: 500px;
-  margin: 40px auto;
-  padding: 60px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  border-radius: 4px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+li {
+  cursor: pointer;
 }
 
 input[type="text"], input[type="password"], select {
   width: 100%;
   padding: 10px;
-  margin-bottom: 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
+  margin: 10px 0;
+  border: none;
+  border-radius: 5px;
+  background-color: #3f3f3f;
+  color: #f3f3f3;
 }
 
-button , #logoutButton {
-  background-color: #007bff;
-  color: #fff;
-  border: none;
-  padding: 12px 24px;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 16px;
-  transition: all 0.2s ease-in-out;
+.buttons-container {
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  align-content: center;
-  text-align: center;
-  margin: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.buttons-container button {
+  margin-top: 20px;
+}
+
+button {
+  background-color: #3f3f3f;
+  color: #f3f3f3;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 20px;
 }
 
 button:hover {
-  background-color: #0056b3;
-  transform: translateY(-2px);
+  background-color: #4f4f4f;
 }
 
-/* Logged-in users list styles */
-#logged-in-users {
-  padding: 0;
-  /* list-style-type: none; */
+h2, h3 {
+  border-bottom: 1px solid #3f3f3f;
+  padding-bottom: 10px;
+  text-align: center;
 }
 
-#logged-in-users li {
-  background-color: #fff;
-  padding: 15px;
-  margin-bottom: 10px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  border-radius: 4px;
+label, h2.username, img.profile-pic, p {
+  text-align: center;
+}
+
+
+ul {
   display: flex;
-  align-items: center;
-  justify-content: center;
   flex-direction: column;
-}
-
-#img {
-  margin-right: 10px;
-  display: block; 
-  margin: 0 auto; 
-  display: flex;
-  align-items: center;
-  justify-content: center; 
-  
-}
-
-#userImage{
-  width: 50px;
-  height: 50px;
   align-items: center;
 }
 
-#messageInput{
-  width: 200px;
-  position: relative;
-  bottom: 10px;
-  left: 50%;
-  transform: translateX(-50%);
-
-}
-#logoutButton{
-  margin:10px;
-  text-align: center;
-  width: 80px;
-}
-
-#sendMessageButton{
-  width: 120px;
-  text-align: center;
-  margin: 10px;
-}
-
-#deleteButton{
-  text-align: center;
-  margin: 10px;
-  width: 120px;
-}
-
-#input{
-  display: flex;
-  align-items: center;
-  justify-content: center; 
-}
-
-/* Error message styles */
-p {
-  color: #f00;
-  font-size: 14px;
-  margin-bottom: 10px;
-}
-
-
-.user-item {
+li, li.user-item {
   cursor: pointer;
+  text-align: center;
+}
+
+
+img.profile-pic {
+  display: block;
+  margin: auto;
+}
+
+button.submit-status {
+  display: block;
+  margin: auto;
 }
