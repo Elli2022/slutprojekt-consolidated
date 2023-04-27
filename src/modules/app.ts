@@ -101,7 +101,7 @@ async function loginUser() {
   }
 
   document.getElementById("logoutButton")!.style.display = "block";
-  document.getElementById("backButton")!.style.display = "block";
+  // document.getElementById("backButton")!.style.display = "block";
   document.getElementById("delete-account-button")!.style.display = "block";
 }
 
@@ -202,13 +202,12 @@ async function displayAllUsers() {
   } catch (err) {
     console.log(err.message);
   }
-}
 
-
-
+};
 
 async function visitOtherUserPage(username: string): Promise<void> {
   const user = await getUserByUsername(username);
+  document.getElementById('backButton')!.style.display = "block";
   elements.statusUpdates!.style.display = 'none'; // hide the status updates list
   const listElements = document.querySelectorAll('.user-item');
   listElements.forEach((element) => {
@@ -257,10 +256,12 @@ async function visitOtherUserPage(username: string): Promise<void> {
 function goBackToMainView() {
   const loggedInUsersPage = document.getElementById("container");
   const otherUserPage = document.getElementById("otherUserPage");
+  document.getElementById('backButton')!.style.display = "none";
 
   if (loggedInUsersPage && otherUserPage) {
     loggedInUsersPage.style.display = "block";
     otherUserPage.style.display = "none";
+    
 
     // Show the userListWrapper when returning to the main view
     const userListWrapper = document.getElementById("userListWrapper");
