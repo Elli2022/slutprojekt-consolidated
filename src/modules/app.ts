@@ -106,8 +106,6 @@ async function loginUser() {
 }
 
 
-
-
 async function displayUserStatus() {
   const currentUser = await getCurrentUser();
   if (currentUser) {
@@ -187,7 +185,7 @@ async function displayAllUsers() {
       userImage.height = 50; // Adjust the height as needed
       userImage.style.marginRight = '5px';
 
-      const userNameText = document.createTextNode(`${user.userName} - Last status: ${latestStatus.status} ${formattedDate ? `(${formattedDate})` : ''}`);
+      const userNameText = document.createTextNode(`${user.userName} - Last status: ${latestStatus.status || 'No status update yet'} ${formattedDate ? `(${formattedDate})` : ''}`);
 
       listItem.appendChild(userImage);
       listItem.appendChild(userNameText);
@@ -205,6 +203,7 @@ async function displayAllUsers() {
     console.log(err.message);
   }
 }
+
 
 
 
@@ -227,14 +226,20 @@ async function visitOtherUserPage(username: string): Promise<void> {
     const statusUpdatesContainer = otherUserPage.querySelector(".status-updates");
     if (statusUpdatesContainer) {
       statusUpdatesContainer.innerHTML = ""; // Clear previous status updates
-      user.statusUpdates.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()); // Sort by descending timestamp
-      user.statusUpdates.forEach((statusUpdate) => {
-        const statusElement = document.createElement("p");
-        const date = new Date(statusUpdate.timestamp);
-        const formattedDate = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')} ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}:${String(date.getSeconds()).padStart(2, '0')}`;
-        statusElement.textContent = `${formattedDate}: ${statusUpdate.status}`;
-        statusUpdatesContainer.appendChild(statusElement);
-      });
+      if (user.statusUpdates) {
+        user.statusUpdates.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()); // Sort by descending timestamp
+        user.statusUpdates.forEach((statusUpdate) => {
+          const statusElement = document.createElement("p");
+          const date = new Date(statusUpdate.timestamp);
+          const formattedDate = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')} ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}:${String(date.getSeconds()).padStart(2, '0')}`;
+          statusElement.textContent = `${formattedDate}: ${statusUpdate.status}`;
+          statusUpdatesContainer.appendChild(statusElement);
+        });
+      } else {
+        const noStatusElement = document.createElement("p");
+        noStatusElement.textContent = "No status update yet.";
+        statusUpdatesContainer.appendChild(noStatusElement);
+      }
     } else {
       console.error("Error: statusUpdatesContainer element is missing.");
     }
@@ -242,6 +247,7 @@ async function visitOtherUserPage(username: string): Promise<void> {
     console.error("Error: loggedInUsersPage or otherUserPage element is missing.");
   }
 }
+
 
 function goBackToMainView() {
   const loggedInUsersPage = document.getElementById("container");
