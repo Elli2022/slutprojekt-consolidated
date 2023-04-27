@@ -74,7 +74,7 @@ async function loginUser() {
       elements.logInpage.style.display = "none";
       elements.container.style.display = "block";
       if (elements.currentUser) {
-        elements.currentUser.textContent = `Logged in as: ${foundUser.userName}`;
+        elements.currentUser.textContent = `${foundUser.userName}`;
       } else {
         console.error('elements.currentUser is null');
       }
@@ -305,6 +305,7 @@ async function deleteCurrentUser() {
   if (userName && password) {
     try {
       const users = await getUsers();
+
       const foundUser = users.find((user) => user.userName === userName && user.password === password);
 
       if (foundUser) {
@@ -322,15 +323,6 @@ async function deleteCurrentUser() {
         elements.container.style.display = "none";
         elements.logInpage.style.display = "block";
 
-        // Hide specified elements
-        elements.otherUserPage.style.visibility = "hidden";
-        elements.allUsersList.style.display = "none";
-        elements.otherUserPage.style.display = "none";
-        document.getElementById('backButton')!.style.display = 'none';
-        document.getElementById('logoutButton')!.style.display = 'none';
-        document.getElementById('delete-account-button')!.style.display = 'none';
-        document.querySelector('p')!.style.display = 'none';
-
         // Update the list of users and their status updates after deleting the user
         await displayAllUsers();
 
@@ -346,7 +338,7 @@ async function deleteCurrentUser() {
       elements.failedToDeleteUser.innerHTML = "Failed to delete user. Try again.";
       elements.body.appendChild(elements.failedToDeleteUser);
       setTimeout(() => {
-          elements.failedToDeleteUser.remove();
+        elements.failedToDeleteUser.remove();
       }, 3000);
     }
   } else {
