@@ -209,6 +209,11 @@ async function displayAllUsers() {
 
 async function visitOtherUserPage(username: string): Promise<void> {
   const user = await getUserByUsername(username);
+  elements.statusUpdates!.style.display = 'none'; // hide the status updates list
+  const listElements = document.querySelectorAll('.user-item');
+  listElements.forEach((element) => {
+    element.style.display = 'none'; // hide the user list items
+  });
   if (!user) {
     throw new Error("User not found.");
   }
@@ -262,10 +267,19 @@ function goBackToMainView() {
     if (userListWrapper) {
       userListWrapper.style.display = "block";
     }
+
+    // Hide the status updates list and user list items
+    elements.statusUpdates!.style.display = 'block';
+    const listElements = document.querySelectorAll('.user-item');
+    listElements.forEach((element) => {
+      element.style.display = 'block';
+    });
   } else {
     console.error("Error: loggedInUsersPage or otherUserPage element is missing.");
   }
 }
+
+
 
 async function redirectToLogin() {
   await logoutAndUpdateStatus();
