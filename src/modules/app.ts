@@ -16,7 +16,7 @@ async function createUser() {
         elements.body.appendChild(elements.errorMessage);
         setTimeout(() => {
           elements.errorMessage.remove();
-        }, 3000);
+        }, 6000);
         return;
       }
 
@@ -30,7 +30,7 @@ async function createUser() {
       };
 
       await saveUser(newUser);
-      elements.accountCreated.innerHTML = "Account Created!";
+      elements.accountCreated.innerHTML = "Account Created! Now you can login!";
       elements.body.appendChild(elements.accountCreated);
       setTimeout(() => {
         elements.accountCreated.remove();
@@ -51,7 +51,6 @@ async function createUser() {
     }, 3000);
   }
 }
-
 
 
 async function loginUser() {
@@ -83,7 +82,8 @@ async function loginUser() {
         const loggedInUserHeader = document.getElementById("loggedInUserHeader");
         loggedInUserHeader!.textContent = `Logged in as: ${foundUser.userName}`;
       } else {
-        elements.errorMessage.innerHTML = "Incorrect username or password. Try again.";
+        
+        elements.errorMessage.innerHTML = "No user with that username or incorrect password. Try again.";
         elements.body.appendChild(elements.errorMessage);
         setTimeout(() => {
           elements.errorMessage.remove();
@@ -105,19 +105,7 @@ async function loginUser() {
     }, 3000);
   }
 
-  const users = await getUsers();
-  if (users.length === 0) {
-    elements.noUsersFound.innerHTML = "No existing accounts found. Please create a new account.";
-    elements.body.appendChild(elements.noUsersFound);
-    setTimeout(() => {
-      elements.noUsersFound.remove();
-    }, 3000);
-  }
-
-  document.getElementById("backButton")!.style.display = "block";
-  document.getElementById("delete-account-button")!.style.display = "block";
 }
-
 
 async function displayUserStatus() {
   const currentUser = await getCurrentUser();
