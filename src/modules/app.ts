@@ -16,7 +16,7 @@ async function createUser() {
         elements.body.appendChild(elements.errorMessage);
         setTimeout(() => {
           elements.errorMessage.remove();
-        }, 6000);
+        }, 3000);
         return;
       }
 
@@ -104,8 +104,12 @@ async function loginUser() {
       elements.errorMessage.remove();
     }, 3000);
   }
-
+  document.getElementById("logoutButton")!.style.display = "block";
+  document.getElementById("backButton")!.style.display = "block";
+  document.getElementById("delete-account-button")!.style.display = "block";
 }
+
+
 
 async function displayUserStatus() {
   const currentUser = await getCurrentUser();
@@ -372,4 +376,6 @@ async function init() {
 }
 
 init();
+
+
 
