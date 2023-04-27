@@ -62,33 +62,28 @@ async function loginUser() {
       const users = await getUsers();
       const foundUser = users.find((user) => user.userName === userName && user.password === password);
 
-      if (foundUser) {
-        foundUser.newUser = false; // Set newUser to false when user logs in
-        foundUser.status = "logged-in"; // Set the user's status to "logged-in"
-        await saveUser(foundUser);
-        localStorage.setItem("loggedInUser", foundUser.userName);
-        elements.allUsersList.style.display = "block";
-        elements.logInpage.style.display = "none";
-        elements.container.style.display = "block";
-        if (elements.currentUser) {
-          elements.currentUser.textContent = `Logged in as: ${foundUser.userName}`;
-        } else {
-          console.error('elements.currentUser is null');
-        }
-
-        displayLoggedInUsers();
-        displayUserStatus();
-
-        const loggedInUserHeader = document.getElementById("loggedInUserHeader");
-        loggedInUserHeader!.textContent = `Logged in as: ${foundUser.userName}`;
-      } else {
-        
-        elements.errorMessage.innerHTML = "No user with that username or incorrect password. Try again.";
-        elements.body.appendChild(elements.errorMessage);
-        setTimeout(() => {
-          elements.errorMessage.remove();
-        }, 3000);
+      if (!foundUser) {
+        return;
       }
+
+      foundUser.newUser = false; // Set newUser to false when user logs in
+      foundUser.status = "logged-in"; // Set the user's status to "logged-in"
+      await saveUser(foundUser);
+      localStorage.setItem("loggedInUser", foundUser.userName);
+      elements.allUsersList.style.display = "block";
+      elements.logInpage.style.display = "none";
+      elements.container.style.display = "block";
+      if (elements.currentUser) {
+        elements.currentUser.textContent = `Logged in as: ${foundUser.userName}`;
+      } else {
+        console.error('elements.currentUser is null');
+      }
+
+      displayLoggedInUsers();
+      displayUserStatus();
+
+      // const loggedInUserHeader = document.getElementById("loggedInUserHeader");
+      // loggedInUserHeader!.textContent = `Logged in as: ${foundUser.userName}`;
     } catch (err) {
       console.log(err);
       elements.errorMessage.innerHTML = "Failed to log in. Try again.";
@@ -104,10 +99,12 @@ async function loginUser() {
       elements.errorMessage.remove();
     }, 3000);
   }
+
   document.getElementById("logoutButton")!.style.display = "block";
   document.getElementById("backButton")!.style.display = "block";
   document.getElementById("delete-account-button")!.style.display = "block";
 }
+
 
 
 
