@@ -323,7 +323,9 @@ async function deleteCurrentUser() {
         elements.passwordInput!.value = '';
         elements.container.style.display = "none";
         elements.logInpage.style.display = "block";
+        document.getElementById('otherUserPage')!.style.display = "none";
         
+      
 
         // Update the list of users and their status updates after deleting the user
         await displayAllUsers();

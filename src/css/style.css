@@ -52,7 +52,7 @@ button:hover {
   background-color: #4f4f4f;
 }
 
-h2, h3 {
+h1, h2, h3 {
   border-bottom: 1px solid #3f3f3f;
   padding-bottom: 10px;
   text-align: center;
