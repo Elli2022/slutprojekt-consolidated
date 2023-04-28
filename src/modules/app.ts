@@ -318,10 +318,12 @@ async function deleteCurrentUser() {
         }, 3000);
 
         // Reset the input fields and navigate back to the login page
+        elements.allUsersList.style.display = "none";
         elements.usernameInput!.value = '';
         elements.passwordInput!.value = '';
         elements.container.style.display = "none";
         elements.logInpage.style.display = "block";
+        
 
         // Update the list of users and their status updates after deleting the user
         await displayAllUsers();
