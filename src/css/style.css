@@ -78,6 +78,7 @@ li, li.user-item {
 img.profile-pic {
   display: block;
   margin: auto;
+  border-radius: 5px;
 }
 
 button.submit-status {
