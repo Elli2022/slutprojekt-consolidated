@@ -63,6 +63,11 @@ async function loginUser() {
       const foundUser = users.find((user) => user.userName === userName && user.password === password);
 
       if (!foundUser) {
+        elements.errorMessage.innerHTML = "Username does not exist. Please create an account before logging in.";
+        elements.body.appendChild(elements.errorMessage);
+        setTimeout(() => {
+          elements.errorMessage.remove();
+        }, 3000);
         return;
       }
 
@@ -104,6 +109,7 @@ async function loginUser() {
   // document.getElementById("backButton")!.style.display = "block";
   document.getElementById("delete-account-button")!.style.display = "block";
 }
+
 
 
 async function displayUserStatus() {
