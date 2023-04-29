@@ -327,6 +327,7 @@ async function deleteCurrentUser() {
         document.getElementById('container')!.style.display = "none";
         document.getElementById('logoutButton')!.style.display = "none";
         document.getElementById('delete-account-button')!.style.display = "none";
+        document.getElementById("backButton")!.style.display = "none";
   
       
 
