@@ -321,10 +321,13 @@ async function deleteCurrentUser() {
         elements.allUsersList.style.display = "none";
         elements.usernameInput!.value = '';
         elements.passwordInput!.value = '';
-        elements.container.style.display = "none";
+        // elements.container.style.display = "none";
         elements.logInpage.style.display = "block";
         document.getElementById('otherUserPage')!.style.display = "none";
-        
+        document.getElementById('container')!.style.display = "none";
+        document.getElementById('logoutButton')!.style.display = "none";
+        document.getElementById('delete-account-button')!.style.display = "none";
+  
       
 
         // Update the list of users and their status updates after deleting the user
@@ -354,8 +357,8 @@ async function deleteCurrentUser() {
   }
 
   // Navigate back to the login page
-  elements.container.style.display = "none";
-  elements.logInpage.style.display = "block";
+  // elements.container.style.display = "none";
+  // elements.logInpage.style.display = "block";
 }
 
 
