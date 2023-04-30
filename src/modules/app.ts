@@ -87,8 +87,7 @@ async function loginUser() {
       displayLoggedInUsers();
       displayUserStatus();
 
-      // const loggedInUserHeader = document.getElementById("loggedInUserHeader");
-      // loggedInUserHeader!.textContent = `Logged in as: ${foundUser.userName}`;
+    
     } catch (err) {
       console.log(err);
       elements.errorMessage.innerHTML = "Failed to log in. Try again.";
@@ -106,9 +105,11 @@ async function loginUser() {
   }
 
   document.getElementById("logoutButton")!.style.display = "block";
-  // document.getElementById("backButton")!.style.display = "block";
   document.getElementById("delete-account-button")!.style.display = "block";
 }
+
+// To move 'container' before 'allUsersList'
+allUsersList!.parentNode!.insertBefore(container, allUsersList);
 
 
 
