@@ -1,5 +1,5 @@
 import { elements } from './domElements';
-import { UserInfo } from './interfaces';
+import { UserInfo, StatusUpdate } from './interfaces';
 import { getUsers, saveUser, getCurrentUser, deleteUser, getUserByUsername } from './api';
 import { getLoggedInUser as loggedInUser } from './api';
 
@@ -109,9 +109,7 @@ async function loginUser() {
 }
 
 // To move 'container' before 'allUsersList'
-allUsersList!.parentNode!.insertBefore(container, allUsersList);
-
-
+elements.allUsersList!.parentNode!.insertBefore(elements.container, elements.allUsersList);
 
 async function displayUserStatus() {
   const currentUser = await getCurrentUser();
@@ -179,20 +177,26 @@ async function displayAllUsers() {
   try {
     const allUsers = await getUsers();
     const userList = document.createElement("ul");
-    allUsers.forEach((user) => {
+    allUsers.forEach((user: UserInfo) => {
       const listItem = document.createElement("li");
       listItem.classList.add("user-item");
-      const latestStatus = user.statusUpdates ? user.statusUpdates.slice(-1)[0] || '' : '';
-      const date = latestStatus.timestamp ? new Date(latestStatus.timestamp) : null;
-      const formattedDate = date ? `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')} ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}:${String(date.getSeconds()).padStart(2, '0')}` : '';
+      const latestStatus: StatusUpdate | "" = user.statusUpdates && user.statusUpdates.length > 0
+        ? user.statusUpdates[user.statusUpdates.length - 1]
+        : "";
 
+      let formattedDate = '';
+      if (typeof latestStatus === 'object' && latestStatus !== null) {
+        const date = latestStatus.timestamp ? new Date(latestStatus.timestamp) : null;
+        formattedDate = date ? `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')} ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}:${String(date.getSeconds()).padStart(2, '0')}` : '';
+      }
+      
       const userImage = document.createElement('img');
       userImage.src = user.imageurl;
       userImage.width = 50; // Adjust the width as needed
       userImage.height = 50; // Adjust the height as needed
       userImage.style.marginRight = '5px';
 
-      const userNameText = document.createTextNode(`${user.userName} - Last status: ${latestStatus.status || 'No status update yet'} ${formattedDate ? `(${formattedDate})` : ''}`);
+      const userNameText = document.createTextNode(`${user.userName} - Last status: ${(typeof latestStatus === 'object' && latestStatus !== null) ? latestStatus.status : 'No status update yet'} ${formattedDate ? `(${formattedDate})` : ''}`);
 
       listItem.appendChild(userImage);
       listItem.appendChild(userNameText);
@@ -206,11 +210,11 @@ async function displayAllUsers() {
       elements.allUsersList.innerHTML = "";
       elements.allUsersList.appendChild(userList);
     }
-  } catch (err) {
-    console.log(err.message);
+  } catch (err: any) {
+    console.log(err?.message ?? err);
   }
-
 };
+
 
 async function visitOtherUserPage(username: string): Promise<void> {
   const user = await getUserByUsername(username);
@@ -218,7 +222,7 @@ async function visitOtherUserPage(username: string): Promise<void> {
   elements.statusUpdates!.style.display = 'none'; // hide the status updates list
   const listElements = document.querySelectorAll('.user-item');
   listElements.forEach((element) => {
-    element.style.display = 'none'; // hide the user list items
+    (element as HTMLElement).style.display = 'none' // hide the user list items
   });
   if (!user) {
     throw new Error("User not found.");
@@ -280,7 +284,7 @@ function goBackToMainView() {
     elements.statusUpdates!.style.display = 'block';
     const listElements = document.querySelectorAll('.user-item');
     listElements.forEach((element) => {
-      element.style.display = 'block';
+      (element as HTMLElement).style.display = 'block';
     });
   } else {
     console.error("Error: loggedInUsersPage or otherUserPage element is missing.");
