@@ -235,7 +235,7 @@ async function visitOtherUserPage(username: string): Promise<void> {
     otherUserPage.querySelector(".username")!.textContent = user.userName;
     otherUserPage.querySelector(".profile-pic")!.setAttribute("src", user.imageurl);
 
-    // Display all status updates in descending order
+   
     const statusUpdatesContainer = otherUserPage.querySelector(".status-updates");
     if (statusUpdatesContainer) {
       statusUpdatesContainer.innerHTML = "";
@@ -272,13 +272,13 @@ function goBackToMainView() {
     otherUserPage.style.display = "none";
     
 
-    // Show the userListWrapper when returning to the main view
+   
     const userListWrapper = document.getElementById("userListWrapper");
     if (userListWrapper) {
       userListWrapper.style.display = "block";
     }
 
-    // Hide the status updates list and user list items
+
     elements.statusUpdates!.style.display = 'block';
     const listElements = document.querySelectorAll('.user-item');
     listElements.forEach((element) => {
@@ -346,7 +346,7 @@ async function deleteCurrentUser() {
           elements.userDeletedSuccessfully.remove();
         }, 3000);
 
-        // Reset the input fields and navigate back to the login page
+       
         elements.allUsersList.style.display = "none";
         elements.usernameInput!.value = '';
         elements.passwordInput!.value = '';
@@ -358,8 +358,6 @@ async function deleteCurrentUser() {
         document.getElementById("backButton")!.style.display = "none";
   
       
-
-        // Update the list of users and their status updates after deleting the user
         await displayAllUsers();
 
       } else {
@@ -388,11 +386,6 @@ async function deleteCurrentUser() {
 
 
 function setupEventListeners() {
-  console.log("Create Account Button: ", elements.createAccountButton);
-  console.log("Submit Button: ", elements.submitButton);
-  console.log("Delete Account Button: ", elements.deleteAccountButton);
-  console.log("Submit Status: ", elements.submitStatus);
-
   elements.createAccountButton!.addEventListener("click", () => {
     createUser();
   });
