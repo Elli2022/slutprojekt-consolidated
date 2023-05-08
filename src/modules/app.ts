@@ -27,7 +27,7 @@ async function createUser() {
         elements.body.appendChild(elements.errorMessage);
         setTimeout(() => {
           elements.errorMessage.remove();
-        }, 3000);
+        }, 2000);
         return;
       }
 
@@ -56,7 +56,7 @@ async function createUser() {
       elements.body.appendChild(elements.errorMessage);
       setTimeout(() => {
         elements.errorMessage.remove();
-      }, 3000);
+      }, 1500);
     }
   } else {
     // Visar felmeddelande om något fält är tomt
@@ -64,7 +64,7 @@ async function createUser() {
     elements.body.appendChild(elements.errorMessage);
     setTimeout(() => {
       elements.errorMessage.remove();
-    }, 3000);
+    }, 1500);
   }
 }
 
@@ -90,7 +90,7 @@ async function loginUser() {
         elements.body.appendChild(elements.errorMessage);
         setTimeout(() => {
           elements.errorMessage.remove();
-        }, 3000);
+        }, 1500);
         return;
       }
 
@@ -127,7 +127,7 @@ async function loginUser() {
       elements.body.appendChild(elements.errorMessage);
       setTimeout(() => {
         elements.errorMessage.remove();
-      }, 3000);
+      }, 1500);
     }
     // Hanterar vid inloggning tomma fält om en användare försöker logga in 
   } else {
@@ -135,7 +135,7 @@ async function loginUser() {
     elements.body.appendChild(elements.errorMessage);
     setTimeout(() => {
       elements.errorMessage.remove();
-    }, 3000);
+    }, 1500);
   }
 
   // Visar "Logga ut" och "Radera konto" knapparna
@@ -181,7 +181,7 @@ async function addStatusUpdate() {
         elements.body.appendChild(elements.errorMessage);
         setTimeout(() => {
           elements.errorMessage.remove();
-        }, 3000);
+        }, 1500);
       }
     } catch (err) {
       console.log(err);
@@ -189,14 +189,14 @@ async function addStatusUpdate() {
       elements.body.appendChild(elements.errorMessage);
       setTimeout(() => {
         elements.errorMessage.remove();
-      }, 3000);
+      }, 1500);
     }
   } else {
     elements.errorMessage.innerHTML = "Please enter a status update.";
     elements.body.appendChild(elements.errorMessage);
     setTimeout(() => {
       elements.errorMessage.remove();
-    }, 3000);
+    }, 1500);
   }
 }
 
