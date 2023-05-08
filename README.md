@@ -1,4 +1,4 @@
-# FE22-js2-slutprojekt-eleonora-nocentini
+# FE22-js2-slutprojekt-eleonora-nocentini-skoldebrink
 
 # Simple Social Media Page using Firebase
 This is a basic social media page that allows users to sign in, create a new user, write status updates, visit other people's profiles, and delete their own account. The project uses Firebase to store user information, including their usernames, passwords, and status updates.
