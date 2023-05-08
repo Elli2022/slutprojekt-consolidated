@@ -1,7 +1,7 @@
 import { elements } from './domElements';
 import { UserInfo, StatusUpdate } from './interfaces';
 import { getUsers, saveUser, getCurrentUser, deleteUser, getUserByUsername } from './api';
-// import { getLoggedInUser as loggedInUser } from './api';
+
 
 async function createUser() {
   const userName = elements.usernameInput!.value.trim();
@@ -10,7 +10,7 @@ async function createUser() {
 
   if (userName && password && selectedImage) {
     try {
-      const existingUser = await getUserByUsername(userName); // Check if user already exists
+      const existingUser = await getUserByUsername(userName);
       if (existingUser) {
         elements.errorMessage.innerHTML = "Username already exists. Please choose a different username.";
         elements.body.appendChild(elements.errorMessage);
@@ -25,7 +25,7 @@ async function createUser() {
         password: password,
         status: "",
         imageurl: selectedImage,
-        newUser: true, // Setting newUser to true when creating a new account
+        newUser: true, 
         statusUpdates: [],
       };
 
@@ -71,8 +71,8 @@ async function loginUser() {
         return;
       }
 
-      foundUser.newUser = false; // Set newUser to false when user logs in
-      foundUser.status = "logged-in"; // Set the user's status to "logged-in"
+      foundUser.newUser = false; 
+      foundUser.status = "logged-in"; 
       await saveUser(foundUser);
       localStorage.setItem("loggedInUser", foundUser.userName);
       elements.allUsersList.style.display = "block";
@@ -108,7 +108,7 @@ async function loginUser() {
   document.getElementById("delete-account-button")!.style.display = "block";
 }
 
-// To move 'container' before 'allUsersList'
+
 elements.allUsersList!.parentNode!.insertBefore(elements.container, elements.allUsersList);
 
 async function displayUserStatus() {
@@ -132,7 +132,6 @@ async function addStatusUpdate() {
         currentUser.statusUpdates.push({ status: newStatus, timestamp: timestamp });
         await saveUser(currentUser);
         elements.statusInput!.value = "";
-        // displayStatusUpdates();
         displayAllUsers();
       } else {
         elements.errorMessage.innerHTML = "Failed to find the current user.";
@@ -166,7 +165,6 @@ async function displayLoggedInUsers() {
     const li = document.createElement("li");
     li.textContent = `${user.userName}:`;
 
-    // Check that the element exists before appending the child element
     if (elements.loggedInUsersList) {
       elements.loggedInUsersList.appendChild(li);
     }
@@ -192,8 +190,8 @@ async function displayAllUsers() {
       
       const userImage = document.createElement('img');
       userImage.src = user.imageurl;
-      userImage.width = 50; // Adjust the width as needed
-      userImage.height = 50; // Adjust the height as needed
+      userImage.width = 50; 
+      userImage.height = 50; 
       userImage.style.marginRight = '5px';
 
       const userNameText = document.createTextNode(`${user.userName} - Last status: ${(typeof latestStatus === 'object' && latestStatus !== null) ? latestStatus.status : 'No status update yet'} ${formattedDate ? `(${formattedDate})` : ''}`);
@@ -219,10 +217,10 @@ async function displayAllUsers() {
 async function visitOtherUserPage(username: string): Promise<void> {
   const user = await getUserByUsername(username);
   document.getElementById('backButton')!.style.display = "block";
-  elements.statusUpdates!.style.display = 'none'; // hide the status updates list
+  elements.statusUpdates!.style.display = 'none'; 
   const listElements = document.querySelectorAll('.user-item');
   listElements.forEach((element) => {
-    (element as HTMLElement).style.display = 'none' // hide the user list items
+    (element as HTMLElement).style.display = 'none'
   });
   if (!user) {
     throw new Error("User not found.");
@@ -240,9 +238,9 @@ async function visitOtherUserPage(username: string): Promise<void> {
     // Display all status updates in descending order
     const statusUpdatesContainer = otherUserPage.querySelector(".status-updates");
     if (statusUpdatesContainer) {
-      statusUpdatesContainer.innerHTML = ""; // Clear previous status updates
+      statusUpdatesContainer.innerHTML = "";
       if (user.statusUpdates) {
-        user.statusUpdates.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()); // Sort by descending timestamp
+        user.statusUpdates.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
         user.statusUpdates.forEach((statusUpdate) => {
           const statusElement = document.createElement("p");
           const date = new Date(statusUpdate.timestamp);
@@ -315,7 +313,7 @@ async function checkIfUserIsLoggedIn() {
 
 async function redirectToLogin() {
   await logoutAndUpdateStatus();
-  window.location.href = "/"; // Assuming your login page is at the root URL
+  window.location.href = "/"; 
 }
 
 document.getElementById("logoutButton")?.addEventListener("click", redirectToLogin);
@@ -352,7 +350,6 @@ async function deleteCurrentUser() {
         elements.allUsersList.style.display = "none";
         elements.usernameInput!.value = '';
         elements.passwordInput!.value = '';
-        // elements.container.style.display = "none";
         elements.logInpage.style.display = "block";
         document.getElementById('otherUserPage')!.style.display = "none";
         document.getElementById('container')!.style.display = "none";
@@ -387,12 +384,7 @@ async function deleteCurrentUser() {
       elements.errorMessage.remove();
     }, 3000);
   }
-
-  // Navigate back to the login page
-  // elements.container.style.display = "none";
-  // elements.logInpage.style.display = "block";
 }
-
 
 
 function setupEventListeners() {
