@@ -48,7 +48,7 @@ async function createUser() {
       elements.body.appendChild(elements.accountCreated);
       setTimeout(() => {
         elements.accountCreated.remove();
-      }, 3000);
+      }, 1500);
     } catch (err) {
       // Loggar fel och visar felmeddelande om kontot inte kunde skapas
       console.log(err);
