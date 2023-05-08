@@ -1,7 +1,7 @@
 import { elements } from './domElements';
 import { UserInfo, StatusUpdate } from './interfaces';
 import { getUsers, saveUser, getCurrentUser, deleteUser, getUserByUsername } from './api';
-import { getLoggedInUser as loggedInUser } from './api';
+// import { getLoggedInUser as loggedInUser } from './api';
 
 async function createUser() {
   const userName = elements.usernameInput!.value.trim();
@@ -296,8 +296,8 @@ async function checkIfUserIsLoggedIn() {
   if (loggedInUserName) {
     const foundUser = await getUserByUsername(loggedInUserName);
     if (foundUser && foundUser.status === "logged-in") {
-      elements.allUsersList.style.display = "block";
       elements.logInpage.style.display = "none";
+      elements.allUsersList.style.display = "block";
       elements.container.style.display = "block";
       if (elements.currentUser) {
         elements.currentUser.textContent = `${foundUser.userName}`;
