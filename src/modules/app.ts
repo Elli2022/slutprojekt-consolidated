@@ -116,7 +116,7 @@ async function loginUser() {
         console.error("elements.currentUser is null");
       }
 
-      // Visar de inloggade användarna och användarens status
+      //Visar de inloggade användarna och användarens status
       displayLoggedInUsers();
       displayUserStatus();
 
