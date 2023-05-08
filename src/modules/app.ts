@@ -1,4 +1,4 @@
-// Importerar de nödvändiga DOM-elementen och gränssnitten från sina respektive moduler
+//Importerar de nödvändiga DOM-elementen och gränssnitten från respektive moduler
 import { elements } from "./domElements";
 import { UserInfo, StatusUpdate } from "./interfaces";
 import {
@@ -41,7 +41,7 @@ async function createUser() {
         statusUpdates: [],
       };
 
-      // Sparar den nya användaren
+      //Sparar den nya användaren
       await saveUser(newUser);
       // visar meddelande om att kontot har skapats
       elements.accountCreated.innerHTML = "Account Created! Now you can login!";
@@ -74,16 +74,16 @@ async function loginUser() {
   const userName = elements.usernameInput!.value.trim();
   const password = elements.passwordInput!.value.trim();
 
-  // Kontrollerar att både användarnamn och lösenord är angivna
+  //Kontrollerar att både användarnamn och lösenord är angivna
   if (userName && password) {
     try {
-      // Hämtar alla användare och letar upp användaren med matchande användarnamn och lösenord
+      //hämtar alla användare och letar upp användaren med matchande användarnamn och lösenord
       const users = await getUsers();
       const foundUser = users.find(
         (user) => user.userName === userName && user.password === password
       );
 
-      // Om användaren inte hittas, visar felmeddelande
+      // Om användaren inte hittas visas felmeddelande
       if (!foundUser) {
         elements.errorMessage.innerHTML =
           "Username does not exist. Please create an account before logging in.";
@@ -94,17 +94,17 @@ async function loginUser() {
         return;
       }
 
-      // Markerar användaren som inte längre ny och uppdaterar statusen till "logged-in"
+      //markerar användaren som inte längre ny och uppdaterar statusen till "logged-in"
       foundUser.newUser = false;
       foundUser.status = "logged-in";
 
-      // Sparar användaren med de uppdaterade attributen
+      //sparar användaren med de uppdaterade egenskaperna
       await saveUser(foundUser);
 
       // Sparar användarnamnet för den inloggade användaren i localStorage
       localStorage.setItem("loggedInUser", foundUser.userName);
 
-      // Visar listan över alla användare, gömmer inloggningssidan och visar huvudsidan
+      // visar listan över alla användare gömmer inloggningssidan och visar huvudsidan
       elements.allUsersList.style.display = "block";
       elements.logInpage.style.display = "none";
       elements.container.style.display = "block";
@@ -120,7 +120,7 @@ async function loginUser() {
       displayLoggedInUsers();
       displayUserStatus();
 
-      // Hantering av fel vid inloggning
+      //hantering av fel vid inloggning
     } catch (err) {
       console.log(err);
       elements.errorMessage.innerHTML = "Failed to log in. Try again.";
@@ -129,7 +129,7 @@ async function loginUser() {
         elements.errorMessage.remove();
       }, 3000);
     }
-    // Hantering av tomma fält vid inloggning
+    // Hanterar vid inloggning tomma fält om en användare försöker logga in 
   } else {
     elements.errorMessage.innerHTML = "Please enter a username and password.";
     elements.body.appendChild(elements.errorMessage);
@@ -143,13 +143,13 @@ async function loginUser() {
   document.getElementById("delete-account-button")!.style.display = "block";
 }
 
-// Lägger till huvudsidan före listan över alla användare i DOM
+// Lägger till huvudsidan före listan över alla användare i DOM:en
 elements.allUsersList!.parentNode!.insertBefore(
   elements.container,
   elements.allUsersList
 );
 
-// Funktion för att visa användarens status
+// Funktion som visar användarens status
 async function displayUserStatus() {
   const currentUser = await getCurrentUser();
   if (currentUser) {
@@ -247,7 +247,7 @@ async function displayAllUsers() {
           : "";
       }
 
-      // Skapar och konfigurerar användarens profilbild
+      // Skapar användarens profilbild
       const userImage = document.createElement("img");
       userImage.src = user.imageurl;
       userImage.width = 50;
@@ -266,7 +266,7 @@ async function displayAllUsers() {
       listItem.appendChild(userImage);
       listItem.appendChild(userNameText);
 
-      // Lägg till en click-händelse för att besöka den andra användarens sida
+      // Lägg er till en eventlistener för att besöka den andra användarens sida
       listItem.addEventListener("click", () => {
         visitOtherUserPage(user.userName);
       });
@@ -294,7 +294,7 @@ async function visitOtherUserPage(username: string): Promise<void> {
     (element as HTMLElement).style.display = "none";
   });
 
-  // om användaren inte hittas, kasta ett fel
+  // om användaren inte hittas så visas ett fel där det står att användaren unte hittas
   if (!user) {
     throw new Error("User not found.");
   }
@@ -318,7 +318,7 @@ async function visitOtherUserPage(username: string): Promise<void> {
 
     // Om statusUpdatesContainer finns
     if (statusUpdatesContainer) {
-      // Rensa statusUpdatesContainer
+      // Rensar statusUpdatesContainer
       statusUpdatesContainer.innerHTML = "";
 
       // Om användaren har statusuppdateringar
@@ -331,7 +331,7 @@ async function visitOtherUserPage(username: string): Promise<void> {
 
         // Loopar igenom varje statusuppdatering
         user.statusUpdates.forEach((statusUpdate) => {
-          // Skapa ett nytt p-element för varje statusuppdatering
+          // Skapar ett nytt p element för varje statusuppdatering
           const statusElement = document.createElement("p");
 
           // Formaterar datumet för statusuppdateringen
@@ -352,7 +352,7 @@ async function visitOtherUserPage(username: string): Promise<void> {
           statusUpdatesContainer.appendChild(statusElement);
         });
       } else {
-        // Om användaren inte har några statusuppdateringar, skapa ett p-element med textinnehållet "No status update yet."
+        // Om användaren inte har några statusuppdateringar skapas ett p element med textinnehållet "No status update yet."
         const noStatusElement = document.createElement("p");
         noStatusElement.textContent = "No status update yet.";
 
@@ -363,7 +363,7 @@ async function visitOtherUserPage(username: string): Promise<void> {
       console.error("Error: statusUpdatesContainer element is missing.");
     }
   } else {
-    // Om statusUpdatesContainer inte hittades, logga ett felmeddelande i konsolen
+    // Om statusUpdatesContainer inte hittades loggas ett felmeddelande i konsolen
     console.error(
       "Error: loggedInUsersPage or otherUserPage element is missing."
     );
@@ -372,14 +372,14 @@ async function visitOtherUserPage(username: string): Promise<void> {
 
 // Funktion för att återgå till huvudvyn
 function goBackToMainView() {
-  // Hämta element för inloggade användares sida och andra användarens sida
+  // Hämtar element för inloggade användares sida och andra användarens sida
   const loggedInUsersPage = document.getElementById("container");
   const otherUserPage = document.getElementById("otherUserPage");
 
   // Döljer tillbaka-knappen
   document.getElementById("backButton")!.style.display = "none";
 
-  // Visar huvudsidan och dölj den andra användarens sida
+  // Visar huvudsidan och döljer den andra användarens sida
   if (loggedInUsersPage && otherUserPage) {
     loggedInUsersPage.style.display = "block";
     otherUserPage.style.display = "none";
@@ -405,7 +405,7 @@ function goBackToMainView() {
 
 // Kontrollerar om en användare är inloggad
 async function checkIfUserIsLoggedIn() {
-  // Hämta inloggad användares användarnamn från localStorage
+  // Hämtar den inloggade användarens användarnamn från localStorage
   const loggedInUserName = localStorage.getItem("loggedInUser");
 
   // Om det finns en inloggad användare
@@ -420,18 +420,18 @@ async function checkIfUserIsLoggedIn() {
       elements.allUsersList.style.display = "block";
       elements.container.style.display = "block";
 
-      // Uppdaterar det aktuella användarnamnet i sidhuvudet
+      //uppdaterar det aktuella användarnamnet i sidhuvudet
       if (elements.currentUser) {
         elements.currentUser.textContent = `${foundUser.userName}`;
       } else {
         console.error("elements.currentUser is null");
       }
 
-      // Visar inloggade användare och användarstatus
+      //visar inloggade användare och användarstatus
       displayLoggedInUsers();
       displayUserStatus();
 
-      // Visar utloggning och radera konto-knapparna
+      // visar utloggning och radera konto-knapparna
       document.getElementById("logoutButton")!.style.display = "block";
       document.getElementById("delete-account-button")!.style.display = "block";
     }
@@ -443,7 +443,7 @@ async function redirectToLogin() {
   // Loggar ut och uppdaterar användarstatus
   await logoutAndUpdateStatus();
 
-  // Omdirigerar till hemsidan (inloggningssidan)
+  //omdirigerar användaren till hemsidan (inloggningssidan)
   window.location.href = "/";
 }
 
@@ -474,13 +474,13 @@ async function deleteCurrentUser() {
   const userName = elements.usernameInput!.value.trim();
   const password = elements.passwordInput!.value.trim();
 
-  // Om både användarnamn och lösenord är angivna
+  //om både användarnamn och lösenord anges
   if (userName && password) {
     try {
-      // Hämtar alla användare
+      //hämtas alla användare
       const users = await getUsers();
 
-      // Hittar användaren med matchande användarnamn och lösenord
+      //hittar användaren med matchande användarnamn och lösenord
       const foundUser = users.find(
         (user) => user.userName === userName && user.password === password
       );
@@ -501,7 +501,7 @@ async function deleteCurrentUser() {
           elements.userDeletedSuccessfully.remove();
         }, 3000);
 
-        // Uppdaterar gränssnittet för att visa inloggningssidan och dölja andra element
+        // Uppdaterar gränssnittet för att visa inloggningssidan och döljer andra element
         elements.allUsersList.style.display = "none";
         elements.usernameInput!.value = "";
         elements.passwordInput!.value = "";
@@ -513,7 +513,7 @@ async function deleteCurrentUser() {
           "none";
         document.getElementById("backButton")!.style.display = "none";
 
-        // Hämtar och visar alla användare igen
+        //Hämtar och visar alla användare igen
         await displayAllUsers();
       } else {
         // Visar felmeddelande om felaktigt användarnamn eller lösenord
@@ -534,9 +534,9 @@ async function deleteCurrentUser() {
         elements.failedToDeleteUser.remove();
       }, 3000);
     }
-    // Om användarnamn och lösenord inte är angivna
+    //om användarnamn och lösenord inte är angivna
   } else {
-    // Visa felmeddelande om användarnamn och lösenord saknas
+    //visa ett felmeddelande om användarnamn och lösenord saknas
     elements.errorMessage.innerHTML = "Please enter a username and password.";
     elements.body.appendChild(elements.errorMessage);
     setTimeout(() => {
@@ -583,16 +583,16 @@ function setupEventListeners() {
 async function init() {
   // Väntar tills sidan har laddats
   document.addEventListener("DOMContentLoaded", async () => {
-    // Konfigurerar eventlisteners
+    //konfigurerar eventlisteners
     setupEventListeners();
 
-    // Visar alla användare
+    //visar alla användare
     await displayAllUsers();
 
-    // Kontrollerar om en användare är inloggad
+    //kontrollerar om en användare är inloggad
     await checkIfUserIsLoggedIn();
   });
 }
 
-// Startar init-funktionen
+//startar init-funktionen
 init();
