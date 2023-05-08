@@ -9,19 +9,19 @@ import {
   getUserByUsername,
 } from "./api";
 
-// Funktion för att skapa en ny användare
+// funktion för att skapa en ny användare
 async function createUser() {
-  // Hämtar värdena för användarnamn, lösenord och vald bild från inputfälten
+  // hämtar värdena för användarnamn, lösenord och vald bild från inputfälten
   const userName = elements.usernameInput!.value.trim();
   const password = elements.passwordInput!.value.trim();
   const selectedImage = elements.imageSelection!.value.trim();
 
   if (userName && password && selectedImage) {
     try {
-      // Kontrollerar om användarnamnet redan finns
+      // kontrollerar om användarnamnet redan finns
       const existingUser = await getUserByUsername(userName);
       if (existingUser) {
-        // Visar felmeddelande om användarnamnet redan finns
+        // visar felmeddelande om användarnamnet redan finns
         elements.errorMessage.innerHTML =
           "Username already exists. Please choose a different username.";
         elements.body.appendChild(elements.errorMessage);
@@ -31,7 +31,7 @@ async function createUser() {
         return;
       }
 
-      // Skapar ett nytt användarobjekt
+      // skapar ett nytt användarobjekt
       const newUser: UserInfo = {
         userName: userName,
         password: password,
@@ -43,7 +43,7 @@ async function createUser() {
 
       // Sparar den nya användaren
       await saveUser(newUser);
-      // Visar meddelande om att kontot har skapats
+      // visar meddelande om att kontot har skapats
       elements.accountCreated.innerHTML = "Account Created! Now you can login!";
       elements.body.appendChild(elements.accountCreated);
       setTimeout(() => {
