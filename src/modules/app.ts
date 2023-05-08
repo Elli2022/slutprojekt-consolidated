@@ -291,6 +291,26 @@ function goBackToMainView() {
   }
 }
 
+async function checkIfUserIsLoggedIn() {
+  const loggedInUserName = localStorage.getItem("loggedInUser");
+  if (loggedInUserName) {
+    const foundUser = await getUserByUsername(loggedInUserName);
+    if (foundUser && foundUser.status === "logged-in") {
+      elements.allUsersList.style.display = "block";
+      elements.logInpage.style.display = "none";
+      elements.container.style.display = "block";
+      if (elements.currentUser) {
+        elements.currentUser.textContent = `${foundUser.userName}`;
+      } else {
+        console.error('elements.currentUser is null');
+      }
+      displayLoggedInUsers();
+      displayUserStatus();
+      document.getElementById("logoutButton")!.style.display = "block";
+      document.getElementById("delete-account-button")!.style.display = "block";
+    }
+  }
+}
 
 
 async function redirectToLogin() {
@@ -410,8 +430,10 @@ async function init() {
   document.addEventListener('DOMContentLoaded', async () => {
     setupEventListeners();
     await displayAllUsers();
+    await checkIfUserIsLoggedIn();
   });
 }
+
 
 init();
 
