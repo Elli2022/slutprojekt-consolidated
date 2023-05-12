@@ -440,10 +440,13 @@ async function checkIfUserIsLoggedIn() {
 
 // Funktion för att omdirigera till inloggningssidan efter utloggning
 async function redirectToLogin() {
-  // Loggar ut och uppdaterar användarstatus
+  // Log out and update user status
   await logoutAndUpdateStatus().then(() => {
-    location.assign('./index.html');
-  })
+    // Change the location.assign() line to use an absolute path
+    location.assign('/slutprojekt-last-master-master-main/index.html');
+  });
+}
+
   //omdirigerar användaren till hemsidan (inloggningssidan)
    
   
