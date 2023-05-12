@@ -444,7 +444,7 @@ async function redirectToLogin() {
   await logoutAndUpdateStatus();
 
   //omdirigerar användaren till hemsidan (inloggningssidan)
-    window.location.href = "https://elli2022.github.io/slutprojekt-last-master/index.html";
+    window.location.href = "https://elli2022.github.io/slutprojekt-last-master-master-main/";
   
 }
 
