@@ -442,10 +442,12 @@ async function checkIfUserIsLoggedIn() {
 async function redirectToLogin() {
   // Log out and update user status
   await logoutAndUpdateStatus().then(() => {
-    // Change the location.assign() line to use an absolute path
-    location.assign('/slutprojekt-last-master-master-main/index.html');
+    // Dynamically build the correct path based on the current URL
+    const basePath = window.location.pathname.split('/').slice(0, -1).join('/');
+    location.assign(`${basePath}/index.html`);
   });
 }
+
 
   //omdirigerar användaren till hemsidan (inloggningssidan)
    
