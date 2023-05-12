@@ -441,10 +441,11 @@ async function checkIfUserIsLoggedIn() {
 // Funktion för att omdirigera till inloggningssidan efter utloggning
 async function redirectToLogin() {
   // Loggar ut och uppdaterar användarstatus
-  await logoutAndUpdateStatus();
-
+  await logoutAndUpdateStatus().then(() => {
+    location.assign('./index.html');
+  })
   //omdirigerar användaren till hemsidan (inloggningssidan)
-    window.location.href = "https://elli2022.github.io/slutprojekt-last-master/index.html";
+   
   
 }
 
