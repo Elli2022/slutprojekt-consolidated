@@ -448,12 +448,6 @@ async function redirectToLogin() {
   });
 }
 
-
-  //omdirigerar användaren till hemsidan (inloggningssidan)
-   
-  
-}
-
 // Lägger till en eventlistener för utloggning
 document
   .getElementById("logoutButton")
