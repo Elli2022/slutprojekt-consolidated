@@ -1,9 +1,27 @@
 {
   "name": "signal-social-web-app",
+  "description": "A modernized social web app built with React, Vite, TypeScript, and Firebase.",
   "version": "2.0.0",
   "private": true,
   "type": "module",
   "packageManager": "pnpm@11.5.0",
+  "homepage": "https://signal-social-web-app.netlify.app",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Elli2022/signal-social-web-app.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Elli2022/signal-social-web-app/issues"
+  },
+  "keywords": [
+    "react",
+    "vite",
+    "typescript",
+    "firebase",
+    "netlify",
+    "social-app",
+    "portfolio-project"
+  ],
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",

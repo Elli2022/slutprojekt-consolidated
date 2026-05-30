@@ -1,59 +1,70 @@
 # Signal Social Web App
 
-Detta repo har moderniserats från en äldre Parcel-app med direkt DOM-hantering och osäker lösenordslagring till en modern frontend med Vite, React, TypeScript och en säkrare Firebase-struktur.
+[![CI](https://github.com/Elli2022/signal-social-web-app/actions/workflows/ci.yml/badge.svg)](https://github.com/Elli2022/signal-social-web-app/actions/workflows/ci.yml)
+[![Live Demo](https://img.shields.io/badge/live-demo-00c7b7?logo=netlify&logoColor=white)](https://signal-social-web-app.netlify.app)
 
-## Ny stack
+Signal Social Web App is a modernized social community frontend rebuilt from an older school final project. The goal of this repository is to show the full upgrade path from a legacy TypeScript app to a cleaner, portfolio-ready product with a modern React stack, safer authentication, automated checks, and a live Netlify deployment.
 
-- React 19.2
-- Vite 8
-- TypeScript 6
+## Live Links
+
+- Live site: [signal-social-web-app.netlify.app](https://signal-social-web-app.netlify.app)
+- Repository: [github.com/Elli2022/signal-social-web-app](https://github.com/Elli2022/signal-social-web-app)
+
+## Highlights
+
+- Rebuilt with React 19, Vite 8, and TypeScript 6
+- Firebase Authentication and Cloud Firestore support
+- Demo mode fallback powered by `localStorage` when Firebase variables are missing
+- Profile editing, avatar selection, posting flow, and session management
+- GitHub Actions CI for linting, typechecking, tests, and production builds
+- Netlify-ready deployment configuration
+
+## Tech Stack
+
+- React
+- Vite
+- TypeScript
 - Firebase Authentication
 - Cloud Firestore
-- ESLint flat config
-- Vitest för grundläggande enhetstester
+- ESLint
+- Vitest
+- Netlify
 
-## Förbättringar
+## Running Locally
 
-- Konto- och sessionshantering är flyttad från egen lösenordslagring till riktig auth.
-- Dataflödet är uppdelat i tydliga lager för auth, profiler och inlägg.
-- Appen har ett inbyggt demoläge via `localStorage` om Firebase-variabler saknas.
-- Bygget är anpassat för modern utveckling och deployment via Netlify.
-
-## Kom igång
-
-1. Aktivera pakethanteraren om det behövs:
+1. Enable Corepack if needed:
 
    ```bash
    corepack enable
    ```
 
-2. Installera beroenden:
+2. Install dependencies:
 
    ```bash
    pnpm install
    ```
 
-3. Starta utvecklingsservern:
+3. Start the development server:
 
    ```bash
    pnpm dev
    ```
 
-4. Bygg produktionsversionen:
+4. Build for production:
 
    ```bash
    pnpm build
    ```
 
-5. Kör kvalitetskontroller:
+5. Run the full quality check suite:
 
    ```bash
    pnpm check
    ```
 
-## Firebase-konfiguration
+## Environment Variables
 
-Kopiera `.env.example` till `.env.local` och fyll i:
+Copy `.env.example` to `.env.local` and provide your Firebase project values:
 
 ```bash
 VITE_FIREBASE_API_KEY=
@@ -64,19 +75,37 @@ VITE_FIREBASE_MESSAGING_SENDER_ID=
 VITE_FIREBASE_APP_ID=
 ```
 
-Om variablerna saknas startar appen i demoläge så att gränssnittet fortfarande går att utveckla och testa lokalt.
+If those variables are missing, the app starts in demo mode so the interface can still be explored and developed locally.
 
-## Arkitektur
+## Scripts
 
-- `src/App.tsx` håller ihop session, realtidsdata och huvudflöden.
-- `src/lib/socialClient.ts` laddar rätt datalager vid behov för mindre startpaket.
-- `src/lib/firebaseStore.ts` innehåller det riktiga data- och authlagret.
-- `src/lib/demoStore.ts` gör appen körbar utan backendhemligheter.
+- `pnpm dev` starts the local development server
+- `pnpm build` creates the production build in `dist/`
+- `pnpm preview` serves the production build locally
+- `pnpm lint` runs ESLint
+- `pnpm typecheck` runs TypeScript without emitting files
+- `pnpm test` runs Vitest
+- `pnpm check` runs lint, typecheck, tests, and build in sequence
 
-## CI
+## Project Structure
 
-Repot innehåller en GitHub Actions-workflow i `.github/workflows/ci.yml` som kör install, lint, typkontroll, tester och build på `main` och pull requests.
+- `src/App.tsx` coordinates app bootstrap, auth state, and data subscriptions
+- `src/components/AuthScreen.tsx` handles sign in, sign up, and demo mode messaging
+- `src/components/Dashboard.tsx` contains the member workspace, profile editing, and posting UI
+- `src/lib/socialClient.ts` lazily loads the correct data layer for a smaller initial bundle
+- `src/lib/firebaseStore.ts` provides the production Firebase data and auth implementation
+- `src/lib/demoStore.ts` keeps the app usable without backend secrets
 
-## Historik
+## Deployment
 
-Detta repo är den konsoliderade slutversionen av flera tidigare GitHub-repon som slagits ihop till en gemensam historik. Äldre migreringsdetaljer finns kvar i `MIGRATION_NOTES.md`.
+The app is configured for Netlify and published at:
+
+- [https://signal-social-web-app.netlify.app](https://signal-social-web-app.netlify.app)
+
+The repository also includes a Netlify configuration file so the same build settings can be reused for Git-connected deployments.
+
+## Project Background
+
+This repository consolidates several earlier course repositories into one cleaner codebase and one readable project history. It now serves as both an upgraded final project and a stronger public portfolio piece.
+
+Migration details from the repository consolidation are kept in [MIGRATION_NOTES.md](./MIGRATION_NOTES.md).
