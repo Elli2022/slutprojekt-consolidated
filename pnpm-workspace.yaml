@@ -1,1 +1,4 @@
 trustLockfile: true
+allowBuilds:
+  "@firebase/util": true
+  protobufjs: true
