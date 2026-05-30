@@ -104,6 +104,8 @@ The app is configured for Netlify and published at:
 
 The repository also includes a Netlify configuration file so the same build settings can be reused for Git-connected deployments.
 
+The current production Firebase setup uses Spark-friendly Firestore rules that require authentication for reads and writes. A stricter document-ownership ruleset is the next planned hardening step.
+
 ## Project Background
 
 This repository consolidates several earlier course repositories into one cleaner codebase and one readable project history. It now serves as both an upgraded final project and a stronger public portfolio piece.
