@@ -1,6 +1,7 @@
 node_modules/
-.parcel-cache/
-.parcel-cache-local/
-.home/
 dist/
+coverage/
+.env
+.env.local
+.env.*.local
 .DS_Store
