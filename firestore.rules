@@ -1,0 +1,96 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isShortText(value, min, max) {
+      return value is string && value.size() >= min && value.size() <= max;
+    }
+
+    function isOptionalShortText(value, max) {
+      return value == null || (value is string && value.size() <= max);
+    }
+
+    function isValidAvatarUrl(value) {
+      return value is string
+        && value.size() <= 512
+        && value.matches('^https?://.+');
+    }
+
+    function hasOnlyProfileFields(data) {
+      return data.keys().hasOnly([
+        'email',
+        'displayName',
+        'avatarUrl',
+        'bio',
+        'createdAt',
+        'createdAtMs',
+        'updatedAt',
+        'updatedAtMs',
+      ]);
+    }
+
+    function hasOnlyPostFields(data) {
+      return data.keys().hasOnly([
+        'authorId',
+        'authorDisplayName',
+        'authorAvatarUrl',
+        'message',
+        'createdAt',
+        'createdAtMs',
+      ]);
+    }
+
+    function isValidProfileDocument(userId, data) {
+      return hasOnlyProfileFields(data)
+        && data.email is string
+        && data.email == request.auth.token.email
+        && isShortText(data.displayName, 2, 32)
+        && isValidAvatarUrl(data.avatarUrl)
+        && isOptionalShortText(data.bio, 180)
+        && data.createdAt is string
+        && data.createdAtMs is int
+        && data.updatedAt is string
+        && data.updatedAtMs is int
+        && request.auth.uid == userId;
+    }
+
+    function isValidPostDocument(data) {
+      return hasOnlyPostFields(data)
+        && data.authorId == request.auth.uid
+        && isShortText(data.authorDisplayName, 2, 32)
+        && isValidAvatarUrl(data.authorAvatarUrl)
+        && isShortText(data.message, 1, 280)
+        && data.createdAt is string
+        && data.createdAtMs is int;
+    }
+
+    match /profiles/{userId} {
+      allow read: if isSignedIn();
+      allow create: if isOwner(userId)
+        && isValidProfileDocument(userId, request.resource.data);
+      allow update: if isOwner(userId)
+        && isValidProfileDocument(userId, request.resource.data)
+        && request.resource.data.email == resource.data.email
+        && request.resource.data.createdAt == resource.data.createdAt
+        && request.resource.data.createdAtMs == resource.data.createdAtMs;
+      allow delete: if isOwner(userId);
+    }
+
+    match /posts/{postId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn()
+        && isValidPostDocument(request.resource.data);
+      allow update: if false;
+      allow delete: if isSignedIn()
+        && resource.data.authorId == request.auth.uid;
+    }
+  }
+}
